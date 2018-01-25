@@ -120,14 +120,13 @@ public class MainMenu extends DungeonCrawl {
     {
         int count = 1;
 
-        // List equipment
-//        ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
-//        for(Equipment e: party.getInventory())
-//        {
-//            ui.appendMain(String.format("%3s%17s%4s%4s%4s%5s", count++ + ") ", e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution() + "\n"));
-//        }
+        ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
+        for(Equipment e: party.getInventory())
+        {
+            ui.appendMain(String.format("%3s%17s%4s%4s%4s%5s", count++ + ") ", e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution() + "\n"));
+        }
         ui.appendMain(count + ") Back\n");
-        waitForNullInput();
+        return false;
     }
 
     private void stats()
