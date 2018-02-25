@@ -2,8 +2,10 @@ package UI;
 
 import Party.Item.Armour;
 import Party.Item.Equipment;
+import Party.Item.Restriction;
 import Party.Item.Weapon;
 import Party.Members.PartyMember;
+import Party.Members.Class;
 
 public class MainMenu extends DungeonCrawl {
 
@@ -87,51 +89,95 @@ public class MainMenu extends DungeonCrawl {
 
     private void inventory()
     {
+        inventory:
         while(true)
         {
-            partyView("Inventory:\n");
-            waitForNullInput();
-            String answer = ui.getTextInput();
             ui.clearMainText();
-            if(answer.matches("1"))
+            int count = 1;
+            ui.appendMain(String.format("%24s%4s%4s%5s\n", "Str", "Dex", "Wil", "Con"));
+            for(Equipment e: party.getInventory())
             {
-                equip(true);
+                ui.appendMain(String.format("%2s) %17s%4s%4s%4s%5s\n", count++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
             }
-            else if(answer.matches("2"))
-            {
-                equip(false);
-            }
-            else if(answer.matches("3"))
-            {
-                ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
-                for(Equipment e: party.getInventory())
-                {
-                    ui.appendMain(String.format("%20s%4s%4s%4s%5s", e.getName() + ":", e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution() + "\n"));
+            ui.appendMain(String.format("%2s) Back\n", count));
+            while(true) {
+                waitForInput();
+                String optionStr = ui.getTextInput();
+                if(optionStr.matches("[0-9]+")) {
+                    int option = Integer.parseInt(optionStr);
+                    if(option == count) break inventory;
+                    else if(option < count && option > 0) {
+                        equip(option - 1);
+                        break;
+                    }
                 }
-                waitForNullInput();
             }
-            else if(answer.matches("4"))
+        }
+    }
+
+    private void equip(int equipment)
+    {
+        partyView("Who to equip to:\n");
+        while(true) {
+            waitForInput();
+            String optionStr = ui.getTextInput();
+            if (optionStr.matches("[1-3]")) {
+                int option = Integer.parseInt(optionStr);
+                equip(option - 1, equipment);
                 break;
-            ui.clearMainText();
+            } else if (optionStr.matches("4"))
+                break;
         }
     }
 
-    private boolean equip(boolean equip)
-    {
-        int count = 1;
+    private void equip(int member, int equipment) {
+        PartyMember p = party.getPartyMember(member);
+        Equipment e = party.getEquipment(equipment);
 
-        ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
-        for(Equipment e: party.getInventory())
-        {
-            ui.appendMain(String.format("%3s%17s%4s%4s%4s%5s", count++ + ") ", e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution() + "\n"));
+        if(e.getRole() != p.getRole()) {
+            ui.appendMain("Can only equip to " + Class.toString(e.getRole()) + "\n");
+            waitForNullInput();
+            return;
         }
-        ui.appendMain(count + ") Back\n");
-        return false;
+
+        Equipment old = null;
+
+        if(e.getEquip() == Restriction.HEAD.equip())
+            p.equipHead((Armour)e);
+        else if(e.getEquip() == Restriction.BODY.equip())
+            p.equipBody((Armour)e);
+        else if(e.getEquip() == Restriction.RIGHT_ARM.equip())
+            p.equipRightArm((Weapon) e);
+        else if(e.getEquip() == Restriction.LEFT_ARM.equip())
+            p.equipLeftArm(e);
+        else if(e.getEquip() == Restriction.ARM.equip())
+            if(arm()) p.equipLeftArm(e);
+            else p.equipRightArm((Weapon)e);
+
+        party.removeEquipment(equipment);
+        if(old != null)
+            party.addEquipment(old);
+        updateInformation();
     }
 
-    private void stats()
-    {
-        partyView:
+    private boolean arm() {
+        while(true) {
+            ui.appendMain("Which arm to equip to:\n");
+            ui.appendMain("1) Left\n");
+            ui.appendMain("2) Right\n");
+            while(true) {
+                waitForInput();
+                String option = ui.getTextInput();
+                if(option.matches("1"))
+                    return true;
+                else if(option.matches("2"))
+                    return false;
+            }
+        }
+    }
+
+    private void stats() {
+        stats:
         while(true) {
             partyView("Who to view:\n");
             while (true) {
@@ -165,7 +211,7 @@ public class MainMenu extends DungeonCrawl {
                     ui.clearMainText();
                     break;
                 } else if (optionStr.matches("4"))
-                    break partyView;
+                    break stats;
             }
         }
     }

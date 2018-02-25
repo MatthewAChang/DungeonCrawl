@@ -54,6 +54,10 @@ public class Party implements Iterable<PartyMember>{
         inventory.add(equipment);
     }
 
+    public void removeEquipment(int index) {
+        inventory.remove(index);
+    }
+
     public Equipment getEquipment(int equipment)
     {
         return inventory.get(equipment);

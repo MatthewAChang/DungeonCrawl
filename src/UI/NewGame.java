@@ -112,23 +112,25 @@ public class NewGame extends DungeonCrawl{
             if(p.getRole() == Class.WARRIOR.role())
             {
                 p.equipBody(new Armour("Bronze Armour", Class.WARRIOR.role(), Restriction.BODY.equip(),1, 0, 0, 1, 60));
-                p.equipRightArm(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),1, 0, 0, 0, 500));
+                p.equipRightArm(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),1, 0, 0, 0, 50));
                 p.equipLeftArm(new Armour("Bronze Shield", Class.WARRIOR.role(), Restriction.LEFT_ARM.equip(),0, 0, 0, 1, 20));
             }
             else if(p.getRole() == Class.ROUGE.role())
             {
                 p.equipBody(new Armour("Worn Cloak", Class.ROUGE.role(), Restriction.BODY.equip(),1, 0, 0, 1, 50));
-                p.equipRightArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 400));
+                p.equipRightArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 40));
                 p.equipLeftArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 40));
             }
             else if(p.getRole() == Class.MAGE.role())
             {
                 p.equipBody(new Armour("Old Tunic", Class.MAGE.role(), Restriction.BODY.equip(),0, 0, 1, 1, 40));
-                p.equipRightArm(new Weapon("Old Staff", Class.MAGE.role(), Restriction.RIGHT_ARM.equip(),0, 0, 2, 0, 600));
+                p.equipRightArm(new Weapon("Old Staff", Class.MAGE.role(), Restriction.RIGHT_ARM.equip(),0, 0, 2, 0, 60));
             }
+            p.resetHP();
         }
         party.addEquipment(new Armour("Assassin Mask", Class.ROUGE.role(), Restriction.HEAD.equip(), 0, 2, 0, 1, 20));
         party.addEquipment(new Weapon("Assassin's Dagger", Class.ROUGE.role(), Restriction.ARM.equip(), 0, 5, 0, 0, 50));
+        party.addEquipment(new Weapon("Long Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(), 5, 0, 0, 0, 65));
     }
 
     private void startMessage()

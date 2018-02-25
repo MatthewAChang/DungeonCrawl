@@ -270,41 +270,56 @@ public abstract class PartyMember {
         }
     }
 
-    public void equipHead(Armour head)
+    public Equipment equipHead(Armour head)
     {
-        if(this.head != null)
+        Armour old = null;
+        if(this.head != null) {
             setStatsFromUnequip(this.head);
+            old = this.head;
+        }
         this.head = head;
         if(this.head != null)
             setStatsFromEquip(head);
+        return old;
     }
 
-    public void equipBody(Armour body)
+    public Equipment equipBody(Armour body)
     {
-        if(this.body != null)
+        Armour old = null;
+        if(this.body != null) {
             setStatsFromUnequip(this.body);
+            old = this.body;
+        }
         this.body = body;
         if(this.body != null)
             setStatsFromEquip(body);
+        return old;
     }
 
-    public void equipRightArm(Weapon rightArm)
+    public Equipment equipRightArm(Weapon rightArm)
     {
-
-        if(this.rightArm != null)
+        Weapon old = null;
+        if(this.rightArm != null) {
             setStatsFromUnequip(this.rightArm);
+            old = this.rightArm;
+        }
         this.rightArm = rightArm;
         if(this.rightArm != null)
             setStatsFromEquip(rightArm);
+        return old;
     }
 
-    public void equipLeftArm(Equipment leftArm)
+    public Equipment equipLeftArm(Equipment leftArm)
     {
-        if(this.leftArm != null)
+        Weapon old = null;
+        if(this.leftArm != null) {
             setStatsFromUnequip(this.leftArm);
+            old = this.rightArm;
+        }
         this.leftArm = leftArm;
         if(this.leftArm != null)
             setStatsFromEquip(leftArm);
+        return old;
     }
 
     private void setStatsFromEquip(Equipment equipment)
@@ -313,7 +328,7 @@ public abstract class PartyMember {
         dexterity += equipment.getDexterity();
         willpower += equipment.getWillpower();
         constitution += equipment.getConstitution();
-        setHP();
+        setMaxHP();
     }
 
     private void setStatsFromUnequip(Equipment equipment)
@@ -322,7 +337,7 @@ public abstract class PartyMember {
         dexterity -= equipment.getDexterity();
         willpower -= equipment.getWillpower();
         constitution -= equipment.getConstitution();
-        setHP();
+        setMaxHP();
         party.addEquipment(equipment);
     }
 
@@ -330,6 +345,13 @@ public abstract class PartyMember {
     {
         HP = baseHP + CONSTITUTION_TO_HP * constitution;
         MaxHP = HP;
+    }
+
+    protected void setMaxHP()
+    {
+        MaxHP = baseHP + CONSTITUTION_TO_HP * constitution;
+        if(HP > MaxHP)
+            HP = MaxHP;
     }
 
     public void setAlive(boolean alive)
