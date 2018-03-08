@@ -13,10 +13,30 @@ public class Help extends DungeonCrawl {
         return help;
     }
 
+    protected static void help(int help) {
+        ui.clearMainText();
+        switch(help) {
+            case 1:
+                helpClass();
+                break;
+            case 2:
+                helpLevelUp();
+                break;
+            case 3:
+                helpTownMainMenu();
+                break;
+            case 4:
+                helpBattle();
+                break;
+        }
+        waitForNullInput();
+        ui.clearMainText();
+    }
+
     protected static void helpClass()
     {
         ui.appendMain("Warrior - Tank/DPS\n");
-        ui.appendMain("Rouge   - DPS\n");
+        ui.appendMain("Rogue   - DPS\n");
         ui.appendMain("Mage    - DPS/Heal\n");
     }
 

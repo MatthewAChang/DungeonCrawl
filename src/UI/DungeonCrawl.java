@@ -72,11 +72,13 @@ public class DungeonCrawl {
                     String pointStr = ui.getTextInput();
                     if (pointStr.matches("[1-4]")) {
                         player.levelUp(Integer.parseInt(pointStr));
-                        break;
-                    } else if (pointStr.matches("5"))
-                        Help.helpLevelUp();
+                        pointsLeft--;
+                    }
+                    else if (pointStr.matches("5"))
+                        Help.help(2);
+                    break;
                 }
-                pointsLeft--;
+
             }
             player.levelUp();
             ui.clearMainText();

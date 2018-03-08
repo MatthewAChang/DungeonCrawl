@@ -20,9 +20,12 @@ public class Battle extends DungeonCrawl {
     public Battle()
     {
         dungeon = createDungeon();
+        ui.appendMain("You are now entering " + dungeon.getName() + ".\n");
+        waitForNullInput();
+        ui.clearMainText();
         party.setLocation(dungeon);
         battle();
-        ui.clearMainText();
+        ui.clearAll();
         party.setLocation(town);
     }
 
@@ -67,30 +70,34 @@ public class Battle extends DungeonCrawl {
             for(PartyMember p : party)
             {
                 if(p.isAlive()) {
-                    ui.appendMain(p.getName() + ":\n");
-                    ui.appendMain("1) Attack  2) Spell  3) Item  4) Run\n");
-                    ui.appendMain("5) Help\n");
-                    while (true) {
-                        waitForInput();
-                        String optionStr = ui.getTextInput();
-                        if (optionStr.matches("[14]")) {
-                            int option = Integer.parseInt(optionStr);
-                            switch (option) {
-                                case 1:
-                                    option = (option * 100) + attack();
-                                    break;
+                    selection:
+                    while(true) {
+                        ui.clearThenAppendMain(p.getName() + ":\n");
+                        ui.appendMain("1) Attack  2) Spell  3) Item  4) Run\n");
+                        ui.appendMain("5) Help\n");
+                        while (true) {
+                            waitForInput();
+                            String optionStr = ui.getTextInput();
+                            if (optionStr.matches("[14]")) {
+                                int option = Integer.parseInt(optionStr);
+                                switch (option) {
+                                    case 1:
+                                        option = (option * 100) + attack();
+                                        break;
 //                            case 2:
 //                                break;
 //                            case 3:
 //                                break;
-                                case 4:
-                                    if (!run())
-                                        break battle;
-                            }
-                            p.setOption(option);
+                                    case 4:
+                                        if (!run())
+                                            break battle;
+                                }
+                                p.setOption(option);
+                                break selection;
+                            } else if (optionStr.matches("5"))
+                                Help.help(4);
                             break;
-                        } else if (optionStr.matches("5"))
-                            Help.helpBattle();
+                        }
                     }
                 }
             }
@@ -179,11 +186,15 @@ public class Battle extends DungeonCrawl {
 
     private boolean run()
     {
-        System.out.println('r');
         Random rand = new Random();
-        if(rand.nextInt(100) + 1 > 5)
+        if(rand.nextInt(100) + 1 > 5) {
+            ui.clearMainText();
+            ui.appendMain("You ran from battle!\n");
+            waitForNullInput();
             return false;
+        }
         ui.appendMain("Run failed!\n");
+        waitForNullInput();
         return true;
     }
 
@@ -249,9 +260,9 @@ public class Battle extends DungeonCrawl {
                     }
                 }
             }
-
             fight = checkEndTurn();
         }
+        ui.clearMainText();
     }
 
     private int damageCalculations(PartyMember member, Enemy enemy)

@@ -121,6 +121,12 @@ public class UIFrame {
         mainText.setCaretPosition(mainText.getDocument().getLength());
     }
 
+    public void clearThenAppendMain(String text)
+    {
+        mainText.setText(text);
+        mainText.setCaretPosition(mainText.getDocument().getLength());
+    }
+
     public void appendParty(String text)
     {
         partyInfo.append(text);

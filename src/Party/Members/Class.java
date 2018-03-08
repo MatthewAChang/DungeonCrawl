@@ -22,7 +22,7 @@ public enum Class {
         switch(role)
         {
             case 1: return "Warrior";
-            case 2: return "Rouge";
+            case 2: return "Rogue";
             case 3: return "Mage";
         }
         return null;

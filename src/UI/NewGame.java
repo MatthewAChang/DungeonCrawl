@@ -27,43 +27,46 @@ public class NewGame extends DungeonCrawl{
     private PartyMember getInfo()
     {
         String name;
-        int role;
+        int role = 0;
 
         while(true)
         {
-            ui.appendMain("What is your name?\n");
+            ui.clearThenAppendMain("What is your name?\n");
 
             while (true)
             {
                 waitForInput();
                 name = ui.getTextInput();
-                if (name.chars().allMatch(Character::isLetter))
+                if (!name.isEmpty() && name.chars().allMatch(Character::isLetter))
                     break;
                 else
                     ui.appendMain("Invalid name.\n");
             }
-            ui.appendMain("What is your class:\n");
-            ui.appendMain("1) Warrior  2) Rouge  3) Mage\n");
-            ui.appendMain("4) Help\n");
-            while (true)
-            {
-                waitForInput();
-                String roleStr = ui.getTextInput();
-                if (roleStr.matches("[1-3]"))
-                {
-                    role = Integer.parseInt(roleStr);
-                    break;
+            role:
+            while (true) {
+                ui.clearThenAppendMain("What is your class:\n");
+                ui.appendMain("1) Warrior  2) Rogue  3) Mage\n");
+                ui.appendMain("4) Help\n");
+                while (true) {
+                    waitForInput();
+                    String roleStr = ui.getTextInput();
+                    if (roleStr.matches("[1-3]")) {
+                        role = Integer.parseInt(roleStr);
+                        break role;
+                    } else if (roleStr.matches("4")) {
+                        Help.help(1);
+                        break;
+                    }
                 }
-                else if (roleStr.matches("4"))
-                    Help.helpClass();
             }
             if (confirm(name, role))
                 break;
+            else ui.clearMainText();
         }
         switch (role)
         {
             case 1: return new Warrior(name);
-            case 2: return new Rouge(name);
+            case 2: return new Rogue(name);
             case 3: return new Mage(name);
             default: return null;
         }
@@ -72,13 +75,12 @@ public class NewGame extends DungeonCrawl{
 
     private boolean confirm(String name, int role)
     {
-        ui.appendMain("Are you sure your name is " + name + " , and your class is " + Class.toString(role) + ":\n");
+        ui.clearThenAppendMain("Are you sure your name is " + name + " , and your class is " + Class.toString(role) + ":\n");
         ui.appendMain("1) Yes   2) No\n");
         while(true)
         {
             waitForInput();
             String sure = ui.getTextInput();
-            ui.clearMainText();
             if(sure.equals("1"))
                 return true;
             else if(sure.equals("2"))
@@ -90,7 +92,7 @@ public class NewGame extends DungeonCrawl{
     {
         if(player.getRole() == Class.WARRIOR.role())
         {
-            party.addMember(new Rouge("Katarina"));
+            party.addMember(new Rogue("Katarina"));
             party.addMember(new Mage("Lux"));
         }
         else if(player.getRole() == Class.ROUGE.role())
@@ -101,7 +103,7 @@ public class NewGame extends DungeonCrawl{
         else if(player.getRole() == Class.MAGE.role())
         {
             party.addMember(new Warrior("Leona"));
-            party.addMember(new Rouge("Katarina"));
+            party.addMember(new Rogue("Katarina"));
         }
     }
 
@@ -140,6 +142,5 @@ public class NewGame extends DungeonCrawl{
         ui.appendMain("    You begin in the town of Kingsland. This is the town where all adventurers begin and where you will make a legacy. ");
         ui.appendMain("On the main town menu, there will be several options. You can go exploring dungeons and discover riches, visit the shop, talk to townsfolk, and visit the inn.\n");
         waitForNullInput();
-        ui.clearMainText();
     }
 }

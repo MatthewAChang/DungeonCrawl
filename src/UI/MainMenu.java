@@ -33,7 +33,7 @@ public class MainMenu extends DungeonCrawl {
             {
                 waitForInput();
                 String optionStr = ui.getTextInput();
-                if(optionStr.matches("[1-7]"))
+                if(optionStr.matches("[1-8]"))
                 {
                     int option = Integer.parseInt(optionStr);
                     ui.clearMainText();
@@ -42,24 +42,37 @@ public class MainMenu extends DungeonCrawl {
                         case 1:
                             new Battle();
                             break;
+                        case 2:
+                            ToBeCreated();
+                            break;
+                        case 3:
+                            ToBeCreated();
+                            break;
                         case 4:
                             inn();
                             break;
                         case 5:
                             inventory();
                             break;
+                        case 6:
+                            ToBeCreated();
+                            break;
                         case 7:
                             stats();
                             break;
-
+                        case 8:
+                            Help.help(3);
                     }
                     break;
                 }
-                else if(optionStr.matches("8"))
-                    Help.helpTownMainMenu();
-
             }
         }
+    }
+
+    private void ToBeCreated()
+    {
+        ui.clearThenAppendMain("Not implemented yet. Please wait.\n");
+        waitForNullInput();
     }
 
     private void inn()
