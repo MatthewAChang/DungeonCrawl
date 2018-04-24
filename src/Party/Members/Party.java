@@ -27,6 +27,10 @@ public class Party implements Iterable<PartyMember>{
         member.setParty(this);
     }
 
+    public PartyMember getPlayer() {
+        return partyMembers.get(0);
+    }
+
     public PartyMember getPartyMember(int get)
     {
         return partyMembers.get(get);

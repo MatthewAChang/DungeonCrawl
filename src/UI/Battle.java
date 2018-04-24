@@ -1,15 +1,10 @@
 package UI;
 
-import Party.Item.Armour;
 import Party.Item.Equipment;
-import Party.Item.Restriction;
-import Party.Item.Weapon;
 import Party.Members.PartyMember;
-import Party.Members.Class;
 import World.Dungeon;
 import World.Enemy;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -17,45 +12,16 @@ public class Battle extends DungeonCrawl {
 
     private Dungeon dungeon;
 
-    public Battle()
+    public Battle(Dungeon dungeon)
     {
-        dungeon = createDungeon();
+        this.dungeon = dungeon;
         ui.appendMain("You are now entering " + dungeon.getName() + ".\n");
         waitForNullInput();
         ui.clearMainText();
         party.setLocation(dungeon);
         battle();
         ui.clearAll();
-        party.setLocation(town);
-    }
-
-    private Dungeon createDungeon()
-    {
-        Random rand = new Random();
-        List<Enemy> enemies = new ArrayList<>();
-
-        List<Equipment> drops = getDrops(rand);
-
-        int ID = 1;
-        for(int i = 1; i < rand.nextInt(3) + 2; i++) {
-            int gold = rand.nextInt(15) + 1;
-            enemies.add(new Enemy("Goblin" + i, ID++, 100, 90, 30, false, gold, 20, drops));
-        }
-        for(int i = 1; i < rand.nextInt(2) + 2; i++) {
-            int gold = rand.nextInt(20) + 5;
-            enemies.add(new Enemy("Troll" + i, ID++, 200, 120, 40, false, gold, 40, drops));
-        }
-        return new Dungeon("Dung", enemies);
-    }
-
-    private List<Equipment> getDrops(Random rand)
-    {
-        List<Equipment> drops = new ArrayList<>();
-        drops.add(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
-        drops.add(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),rand.nextInt(3) + 1, 0, 0, 0, rand.nextInt(6) + 50));
-        drops.add(new Armour("Worn Cowl", Class.MAGE.role(), Restriction.HEAD.equip(),0, 0, rand.nextInt(4) + 1, rand.nextInt(3), rand.nextInt(4) + 20));
-        drops.add(new Armour("Bronze Helmet", Class.WARRIOR.role(), Restriction.HEAD.equip(),rand.nextInt(2), 0, 0, rand.nextInt(3), rand.nextInt(4) + 30));
-        return drops;
+        party.setLocation(world.getCurrentTown());
     }
 
     private void battle()

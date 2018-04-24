@@ -10,9 +10,9 @@ public class Dungeon extends Location implements Iterable<Enemy>{
 
     private List<Enemy> enemies;
 
-    public Dungeon(String name, List<Enemy> enemies)
+    public Dungeon(int id, String name, List<Enemy> enemies)
     {
-        super(name, false);
+        super(id, name, false);
         this.enemies = new ArrayList<>();
 
         if(enemies != null)

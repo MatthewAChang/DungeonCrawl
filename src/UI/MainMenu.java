@@ -4,8 +4,9 @@ import Party.Item.Armour;
 import Party.Item.Equipment;
 import Party.Item.Restriction;
 import Party.Item.Weapon;
-import Party.Members.PartyMember;
 import Party.Members.Class;
+import Party.Members.PartyMember;
+import World.Dungeon;
 
 public class MainMenu extends DungeonCrawl {
 
@@ -40,7 +41,7 @@ public class MainMenu extends DungeonCrawl {
                     switch (option)
                     {
                         case 1:
-                            new Battle();
+                            battle();
                             break;
                         case 2:
                             ToBeCreated();
@@ -73,6 +74,31 @@ public class MainMenu extends DungeonCrawl {
     {
         ui.clearThenAppendMain("Not implemented yet. Please wait.\n");
         waitForNullInput();
+    }
+
+    private void battle() {
+        ui.appendMain("Where would you like to go:\n");
+        int i = 1;
+        for(Dungeon d: world.getCurrentTown()) {
+            ui.appendMain(i + ") " + d.getName() + "\n");
+            i++;
+        }
+        ui.appendMain(i + ") Back\n");
+        while(true) {
+            waitForInput();
+            String answer = ui.getTextInput();
+            if(answer.matches("[0-9]+")) {
+                int option = Integer.parseInt(answer);
+                if(option > 0 && option <= world.getCurrentTown().getDungeons().size()) {
+                    new Battle(world.getCurrentTown().getDungeon(option - 1));
+                    break;
+                }
+                else if(option == i) {
+                    break;
+                }
+            }
+        }
+
     }
 
     private void inn()
@@ -185,6 +211,16 @@ public class MainMenu extends DungeonCrawl {
                     return true;
                 else if(option.matches("2"))
                     return false;
+            }
+        }
+    }
+
+    private void travel() {
+        while(true) {
+            ui.appendMain("Where would you like to travel:\n");
+            while (true) {
+                waitForInput();
+                String optionStr = ui.getTextInput();
             }
         }
     }

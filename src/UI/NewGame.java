@@ -1,11 +1,10 @@
 package UI;
 
 import Party.Item.Armour;
-import Party.Item.Weapon;
 import Party.Item.Restriction;
+import Party.Item.Weapon;
 import Party.Members.Class;
 import Party.Members.*;
-import World.Town;
 
 public class NewGame extends DungeonCrawl{
 
@@ -13,14 +12,12 @@ public class NewGame extends DungeonCrawl{
     {
         ui = new UIFrame();
         party = new Party();
-        player = getInfo();
-        party.addMember(player);
+        party.addMember(getInfo());
         addOtherMembers();
         for(PartyMember p : party)
             levelUp(p);
         addBaseEquipment();
-        party.setLocation(new Town("Kingsland"));
-        town = party.getLocation();
+        party.setLocation(world.getInstance().getTowns().get(0));
         startMessage();
     }
 
@@ -90,20 +87,20 @@ public class NewGame extends DungeonCrawl{
 
     private void addOtherMembers()
     {
-        if(player.getRole() == Class.WARRIOR.role())
+        if(party.getPlayer().getRole() == Class.WARRIOR.role())
         {
-            party.addMember(new Rogue("Katarina"));
-            party.addMember(new Mage("Lux"));
+            party.addMember(new Rogue("Leliana"));
+            party.addMember(new Mage("Luxanna"));
         }
-        else if(player.getRole() == Class.ROUGE.role())
+        else if(party.getPlayer().getRole() == Class.ROUGE.role())
         {
-            party.addMember(new Warrior("Leona"));
-            party.addMember(new Mage("Syndra"));
+            party.addMember(new Warrior("Marth"));
+            party.addMember(new Mage("Vanille"));
         }
-        else if(player.getRole() == Class.MAGE.role())
+        else if(party.getPlayer().getRole() == Class.MAGE.role())
         {
-            party.addMember(new Warrior("Leona"));
-            party.addMember(new Rogue("Katarina"));
+            party.addMember(new Warrior("Ogma"));
+            party.addMember(new Rogue("Rose"));
         }
     }
 
@@ -138,8 +135,8 @@ public class NewGame extends DungeonCrawl{
     private void startMessage()
     {
         ui.clearMainText();
-        ui.appendMain("Welcome to the world of _______\n");
-        ui.appendMain("    You begin in the town of Kingsland. This is the town where all adventurers begin and where you will make a legacy. ");
+        ui.appendMain("Welcome to the world of " + world.getName() + ".\n");
+        ui.appendMain("    You begin in the town of " + world.getCurrentTown().getName() + ". This is the town where all adventurers begin and where you will make a legacy. ");
         ui.appendMain("On the main town menu, there will be several options. You can go exploring dungeons and discover riches, visit the shop, talk to townsfolk, and visit the inn.\n");
         waitForNullInput();
     }

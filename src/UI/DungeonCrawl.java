@@ -4,16 +4,16 @@ import Party.Members.Party;
 import Party.Members.PartyMember;
 import World.Dungeon;
 import World.Enemy;
-import World.Location;
+import World.World;
 
 public class DungeonCrawl {
+    protected static World world;
     protected static Party party;
-    protected static PartyMember player;
     protected static UIFrame ui;
-    protected static Location town;
 
     public static void main(String[] args)
     {
+        world = world.getInstance();
         new NewGame();
         new MainMenu();
     }
@@ -56,22 +56,22 @@ public class DungeonCrawl {
     protected static void levelUp(PartyMember member)
     {
         int pointsLeft = PartyMember.LEVEL_UP_POINTS;
-        if(member == player)
+        if(member == party.getPlayer())
         {
             while (pointsLeft > 0) {
                 ui.clearMainText();
                 ui.appendMain("You have leveled up!\n");
                 ui.appendMain("You have " + pointsLeft + " skill points left:\n");
-                ui.appendMain(String.format("%-16s%s", "1) Strength", player.getBaseStrength() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "2) Dexterity", player.getBaseDexterity() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "3) Willpower", player.getBaseWillpower() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "4) Constitution", player.getBaseConstitution() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "1) Strength", party.getPlayer().getBaseStrength() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "2) Dexterity", party.getPlayer().getBaseDexterity() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "3) Willpower", party.getPlayer().getBaseWillpower() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "4) Constitution", party.getPlayer().getBaseConstitution() + "\n"));
                 ui.appendMain("5) Help\n");
                 while (true) {
                     waitForInput();
                     String pointStr = ui.getTextInput();
                     if (pointStr.matches("[1-4]")) {
-                        player.levelUp(Integer.parseInt(pointStr));
+                        party.getPlayer().levelUp(Integer.parseInt(pointStr));
                         pointsLeft--;
                     }
                     else if (pointStr.matches("5"))
@@ -80,7 +80,7 @@ public class DungeonCrawl {
                 }
 
             }
-            player.levelUp();
+            party.getPlayer().levelUp();
             ui.clearMainText();
         }
         else
