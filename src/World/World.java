@@ -1,18 +1,20 @@
 package World;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class World {
+public class World implements Iterable<Town>{
     private static World instance;
 
     private String name;
 
     private List<Town> towns;
-    protected Town currentTown;
+    private Town currentTown;
 
     protected String[][] names = {
-            {"Kingsland", "Forest of Trolls", "Cave of Glass", "King's Lair"}
+            {"Kingsland", "Bright Garden", "Cave of Glass", "King's Lair"},
+            {"The Green Forest", "The Cave of Trolls", "Forgotten Place", "The"}
 
     };
 
@@ -40,11 +42,17 @@ public class World {
         return name;
     }
 
-    public List<Town> getTowns() {
-        return towns;
-    }
-
     public Town getCurrentTown() {
         return currentTown;
+    }
+
+    public void setCurrentTown(int index) {
+        currentTown = towns.get(index);
+    }
+
+
+    @Override
+    public Iterator<Town> iterator() {
+        return towns.iterator();
     }
 }

@@ -17,11 +17,11 @@ public class Battle extends DungeonCrawl {
         this.dungeon = dungeon;
         ui.appendMain("You are now entering " + dungeon.getName() + ".\n");
         waitForNullInput();
+        world.getCurrentTown().setCurrentDungeon(dungeon);
         ui.clearMainText();
-        party.setLocation(dungeon);
         battle();
         ui.clearAll();
-        party.setLocation(world.getCurrentTown());
+        world.getCurrentTown().setCurrentDungeon(null);
     }
 
     private void battle()

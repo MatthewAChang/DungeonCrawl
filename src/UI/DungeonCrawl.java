@@ -7,13 +7,15 @@ import World.Enemy;
 import World.World;
 
 public class DungeonCrawl {
+    protected static UIFrame ui;
     protected static World world;
     protected static Party party;
-    protected static UIFrame ui;
 
     public static void main(String[] args)
     {
+        ui = ui.getInstance();
         world = world.getInstance();
+        party = party.getInstance();
         new NewGame();
         new MainMenu();
     }
@@ -22,9 +24,9 @@ public class DungeonCrawl {
     {
         ui.clearPartyInfo();
         ui.clearOtherInfo();
-        ui.appendOther("Location: " + party.getLocation().getName() + "\n");
+        ui.appendOther("Location: " + world.getCurrentTown().getName() + "\n");
         updatePartyInfo();
-        if(!party.getLocation().isTown())
+        if(world.getCurrentTown().getCurrentDungeon() != null)
             updateEnemyInformation();
     }
 
@@ -41,7 +43,7 @@ public class DungeonCrawl {
 
     private static void updateEnemyInformation()
     {
-        Dungeon dungeon = (Dungeon)party.getLocation();
+        Dungeon dungeon = world.getCurrentTown().getCurrentDungeon();
         for(Enemy e : dungeon)
         {
             String info = e.getName() + "\t";

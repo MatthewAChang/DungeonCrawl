@@ -10,14 +10,11 @@ public class NewGame extends DungeonCrawl{
 
     public NewGame()
     {
-        ui = new UIFrame();
-        party = new Party();
         party.addMember(getInfo());
         addOtherMembers();
         for(PartyMember p : party)
             levelUp(p);
         addBaseEquipment();
-        party.setLocation(world.getInstance().getTowns().get(0));
         startMessage();
     }
 

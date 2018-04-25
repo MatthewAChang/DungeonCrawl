@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Dungeon extends Location implements Iterable<Enemy>{
+public class Dungeon extends Location implements Iterable<Enemy> {
 
     private List<Enemy> enemies;
 
     public Dungeon(int id, String name, List<Enemy> enemies)
     {
-        super(id, name, false);
+        super(id, name);
         this.enemies = new ArrayList<>();
 
         if(enemies != null)

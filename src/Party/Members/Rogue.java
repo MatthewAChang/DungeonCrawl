@@ -14,7 +14,6 @@ public class Rogue extends PartyMember {
 
     public int getDamage()
     {
-        int damage = 0;
         Weapon dagger = null;
         if(leftArm != null)
             dagger = (Weapon) this.leftArm;

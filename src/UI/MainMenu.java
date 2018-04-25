@@ -7,6 +7,7 @@ import Party.Item.Weapon;
 import Party.Members.Class;
 import Party.Members.PartyMember;
 import World.Dungeon;
+import World.Town;
 
 public class MainMenu extends DungeonCrawl {
 
@@ -56,7 +57,7 @@ public class MainMenu extends DungeonCrawl {
                             inventory();
                             break;
                         case 6:
-                            ToBeCreated();
+                            travel();
                             break;
                         case 7:
                             stats();
@@ -216,11 +217,27 @@ public class MainMenu extends DungeonCrawl {
     }
 
     private void travel() {
+        travel:
         while(true) {
             ui.appendMain("Where would you like to travel:\n");
-            while (true) {
+            int count = 1;
+            for(Town t: world)
+            {
+                ui.appendMain(count++ + ") " + t.getName() + "\n");
+            }
+            ui.appendMain(count + ") Back\n");
+            while(true) {
                 waitForInput();
                 String optionStr = ui.getTextInput();
+                if(optionStr.matches("[0-9]+")) {
+                    int option = Integer.parseInt(optionStr);
+                    if(option == count) break travel;
+                    else if(option < count && option > 0) {
+                        world.setCurrentTown(option - 1);
+                        updateInformation();
+                        break travel;
+                    }
+                }
             }
         }
     }

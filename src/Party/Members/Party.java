@@ -1,24 +1,30 @@
 package Party.Members;
 
 import Party.Item.Equipment;
-import World.Location;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Party implements Iterable<PartyMember>{
+    private static Party instance;
+
     private List<PartyMember> partyMembers;
     private List<Equipment> inventory;
     private int gold;
-    private Location location;
 
-    public Party()
+    private Party()
     {
         partyMembers = new ArrayList<>();
         inventory = new ArrayList<>();
         gold = 0;
-        location = null;
+    }
+
+    public static Party getInstance() {
+        if(instance == null) {
+            instance = new Party();
+        }
+        return instance;
     }
 
     public void addMember(PartyMember member)
@@ -75,16 +81,6 @@ public class Party implements Iterable<PartyMember>{
     public void addGold(int gold)
     {
         this.gold += gold;
-    }
-
-    public Location getLocation()
-    {
-        return location;
-    }
-
-    public void setLocation(Location location)
-    {
-        this.location = location;
     }
 
     @Override

@@ -1,18 +1,6 @@
 package UI;
 
 public class Help extends DungeonCrawl {
-
-    private boolean help;
-
-    public void setTutorial(boolean help)
-    {
-        help = false;
-    }
-
-    public boolean isHelp() {
-        return help;
-    }
-
     protected static void help(int help) {
         ui.clearMainText();
         switch(help) {

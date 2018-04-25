@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class UIFrame {
+    private static UIFrame instance;
+
     private final int FRAME_WIDTH = 550;
     private final int FRAME_HEIGHT = 500;
 
@@ -23,7 +25,7 @@ public class UIFrame {
     private String textInput;
     private boolean inputEntered = false;
 
-    public UIFrame()
+    private UIFrame()
     {
         JFrame fr = new JFrame();
         fr.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -36,6 +38,13 @@ public class UIFrame {
         fr.add(panel);
         fr.setLocationRelativeTo(null);
         fr.setVisible(true);
+    }
+
+    public static UIFrame getInstance() {
+        if(instance == null) {
+            instance = new UIFrame();
+        }
+        return instance;
     }
 
     private JPanel CreatePanel()
