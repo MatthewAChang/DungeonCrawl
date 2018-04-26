@@ -4,12 +4,18 @@ import Party.Item.Armour;
 
 public class Warrior extends PartyMember {
 
+    private static int HP_PER_LEVEL = 6;
+    private static int MANA_PER_LEVEL = 5;
+
     public Warrior(String name)
     {
         super(name, Class.WARRIOR.role());
-        baseHP = 550;
-        setHP();
-        strength = INITIAL_STAT_UP;
+        baseHP = 100;
+        baseMana = 100;
+        strength = 14;
+        dexterity = 13;
+        constitution = 13;
+        setStats();
     }
 
     public int getDamage()
@@ -17,17 +23,25 @@ public class Warrior extends PartyMember {
         return super.getDamage() + strength;
     }
 
-    public int getArmour()
+    public int getWarriorArmour()
     {
         int armour = 0;
-        Armour shield = null;
         if(leftArm != null)
         {
-            shield = (Armour) leftArm;
+            Armour shield = (Armour) leftArm;
             armour += shield.getArmour();
         }
         armour += super.getArmour();
         return armour;
+    }
+
+    @Override
+    public void levelUp()
+    {
+        baseHP += HP_PER_LEVEL++;
+        baseMana += MANA_PER_LEVEL++;
+        level += 1;
+        setStats();
     }
 
     @Override

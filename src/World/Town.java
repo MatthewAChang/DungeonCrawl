@@ -17,6 +17,8 @@ public class Town extends Location implements Iterable<Dungeon>{
     private List<Dungeon> dungeons;
     private Dungeon currentDungeon;
 
+    private static int nextDungeonId = 1;
+
     public Town(int id, String[] names)
     {
         super(id, names[0]);
@@ -28,50 +30,74 @@ public class Town extends Location implements Iterable<Dungeon>{
 
     private void addDungeons(String[] names) {
         for (int i = 1; i < names.length; i++) {
-            dungeons.add(createDungeon(i * getId(), names[i]));
+            dungeons.add(createDungeon(names[i]));
         }
     }
 
-    private Dungeon createDungeon(int id, String name)
+    private Dungeon createDungeon(String name)
     {
         Random rand = new Random();
         List<Enemy> enemies = new ArrayList<>();
 
-        List<Equipment> drops = getDrops(rand, id);
+        List<Equipment> drops = getDrops(rand, nextDungeonId);
 
         int enemyId = 1;
-        switch(id) {
+        int gold;
+        switch(nextDungeonId) {
             case 1:
                 for(int i = 1; i < rand.nextInt(3) + 2; i++) {
-                    int gold = rand.nextInt(15) + 1;
-                    enemies.add(new Enemy("Goblin" + i, enemyId++, 100, 90, 30, false, gold, 20, drops));
+                    gold = rand.nextInt(15) + 1;
+                    enemies.add(new Enemy("Goblin" + i, enemyId++, 100, 30, 5, false, gold, 50, drops));
                 }
                 for(int i = 1; i < rand.nextInt(2) + 2; i++) {
-                    int gold = rand.nextInt(20) + 5;
-                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 120, 40, false, gold, 40, drops));
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
                 }
                 break;
             case 2:
                 for(int i = 1; i < rand.nextInt(5) + 2; i++) {
-                    int gold = rand.nextInt(15) + 1;
-                    enemies.add(new Enemy("Goblin" + i, enemyId++, 100, 90, 30, false, gold, 20, drops));
+                    gold = rand.nextInt(15) + 1;
+                    enemies.add(new Enemy("Goblin" + i, enemyId++, 100, 30, 5, false, gold, 50, drops));
                 }
-                for(int i = 1; i < rand.nextInt(4) + 2; i++) {
-                    int gold = rand.nextInt(20) + 5;
-                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 120, 40, false, gold, 40, drops));
+                for(int i = 1; i < rand.nextInt(3) + 2; i++) {
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
                 }
                 break;
             case 3:
-                for(int i = 1; i < rand.nextInt(2) + 2; i++) {
-                    int gold = rand.nextInt(20) + 5;
-                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 120, 40, false, gold, 40, drops));
+                for(int i = 1; i < rand.nextInt(4) + 2; i++) {
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
                 }
-                int gold = rand.nextInt(100) + 100;
-                enemies.add(new Enemy("Troll Leader", enemyId++, 300, 150, 50, true, gold, 40, drops));
+                gold = rand.nextInt(100) + 100;
+                enemies.add(new Enemy("Troll Leader", enemyId++, 300, 50, 25, true, gold, 40, drops));
+                break;
+            case 4:
+                for(int i = 1; i < rand.nextInt(5) + 2; i++) {
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
+                }
+                break;
+            case 5:
+                for(int i = 1; i < rand.nextInt(5) + 2; i++) {
+                    gold = rand.nextInt(15) + 1;
+                    enemies.add(new Enemy("Goblin" + i, enemyId++, 100, 30, 5, false, gold, 50, drops));
+                }
+                for(int i = 1; i < rand.nextInt(4) + 2; i++) {
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
+                }
+                break;
+            case 6:
+                for(int i = 1; i < rand.nextInt(3) + 2; i++) {
+                    gold = rand.nextInt(20) + 5;
+                    enemies.add(new Enemy("Troll" + i, enemyId++, 200, 40, 10, false, gold, 100, drops));
+                }
+                gold = rand.nextInt(100) + 100;
+                enemies.add(new Enemy("Troll Leader", enemyId++, 300, 50, 25, true, gold, 40, drops));
                 break;
         }
-
-        return new Dungeon(id, name, enemies);
+        return new Dungeon(nextDungeonId++, name, enemies);
     }
 
     private List<Equipment> getDrops(Random rand, int id)

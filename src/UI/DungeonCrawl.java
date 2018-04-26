@@ -34,9 +34,9 @@ public class DungeonCrawl {
     {
         for(PartyMember p : party)
         {
-            String basic = String.format("%-6s%-13s%-8s", "L." + p.getLevel(), p.getName(), p.roleToString());
+            String basic = String.format("L.%-3s%-10sEXP:%s", p.getLevel(), p.getName(), p.getExpForNextLvlRelative());
             ui.appendParty(basic + "\n");
-            String battle = String.format("%3s%9s%7s%4s", "HP:", p.getHP() + "/" + p.getMaxHP(), "EXP:", p.getExpForNextLvlRelative());
+            String battle = String.format("HP:%4s/%-4s  MP:%4s/%-4s", p.getHP(), p.getMaxHP(), p.getMana(), p.getMaxMana());
             ui.appendParty(battle + "\n");
         }
     }

@@ -2,13 +2,20 @@ package Party.Members;
 
 import Party.Item.Armour;
 import Party.Item.Equipment;
+import Party.Item.Spell;
 import Party.Item.Weapon;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class PartyMember {
     protected Armour head;
     protected Armour body;
     protected Weapon rightArm;
     protected Equipment leftArm;
+
+    protected List<Spell> spells;
 
     protected Party party;
 
@@ -20,7 +27,10 @@ public abstract class PartyMember {
     protected int expForNextLvl;
     protected int baseHP;
     protected int HP;
-    protected int MaxHP;
+    protected int maxHP;
+    protected int baseMana;
+    protected int mana;
+    protected int maxMana;
     protected int strength;
     protected int dexterity;
     protected int willpower;
@@ -32,9 +42,8 @@ public abstract class PartyMember {
     protected int option;
 
     protected final int INITIAL_STAT = 10;
-    protected final int INITIAL_STAT_UP = 11;
 
-    protected final int CONSTITUTION_TO_HP = 10;
+    protected final int CONVERSION = 5;
 
     public final static int LEVEL_UP_POINTS = 3;
 
@@ -51,7 +60,9 @@ public abstract class PartyMember {
         willpower = INITIAL_STAT;
         constitution = INITIAL_STAT;
 
-        expForNextLvl = 100;
+        spells = new ArrayList<>();
+
+        expForNextLvl = 2000;
 
         alive = true;
 
@@ -108,7 +119,17 @@ public abstract class PartyMember {
 
     public int getMaxHP()
     {
-        return MaxHP;
+        return maxHP;
+    }
+
+    public int getMana()
+    {
+        return mana;
+    }
+
+    public int getMaxMana()
+    {
+        return maxMana;
     }
 
     public int getStrength()
@@ -192,11 +213,11 @@ public abstract class PartyMember {
         return alive;
     }
 
-
     public Party getParty()
     {
         return this.party;
     }
+
     public boolean hasAttacked()
     {
         return attacked;
@@ -207,18 +228,12 @@ public abstract class PartyMember {
         return option;
     }
 
-    public void resetHP()
-    {
-        HP = MaxHP;
-    }
-
     public boolean addExp(int exp)
     {
         this.exp += exp;
         if(this.exp >= expForNextLvl)
         {
-            double tempExp = (50 * Math.pow(level + 1, 3)) / 3 - (100 * Math.pow(level + 1, 2)) + (850 * level + 1 / 3) - 200;
-            expForNextLvl = (int)tempExp;
+            expForNextLvl += 500;
             return true;
         }
         return false;
@@ -243,12 +258,6 @@ public abstract class PartyMember {
     public void setParty(Party party)
     {
         this.party = party;
-    }
-
-    public void levelUp()
-    {
-        level += 1;
-        setHP();
     }
 
     public void levelUp(int stat)
@@ -328,7 +337,7 @@ public abstract class PartyMember {
         dexterity += equipment.getDexterity();
         willpower += equipment.getWillpower();
         constitution += equipment.getConstitution();
-        setMaxHP();
+        setMaxStats();
     }
 
     private void setStatsFromUnequip(Equipment equipment)
@@ -337,21 +346,24 @@ public abstract class PartyMember {
         dexterity -= equipment.getDexterity();
         willpower -= equipment.getWillpower();
         constitution -= equipment.getConstitution();
-        setMaxHP();
+        setMaxStats();
         party.addEquipment(equipment);
     }
 
-    protected void setHP()
-    {
-        HP = baseHP + CONSTITUTION_TO_HP * constitution;
-        MaxHP = HP;
+    public void setStats() {
+        HP = baseHP + CONVERSION * constitution;
+        maxHP = HP;
+        mana = baseMana + CONVERSION * willpower;
+        maxMana = mana;
     }
 
-    protected void setMaxHP()
-    {
-        MaxHP = baseHP + CONSTITUTION_TO_HP * constitution;
-        if(HP > MaxHP)
-            HP = MaxHP;
+    protected void setMaxStats() {
+        maxHP = baseHP + CONVERSION * constitution;
+        if(HP > maxHP)
+            HP = maxHP;
+        maxMana = baseMana + CONVERSION * willpower;
+        if(mana > maxMana)
+            mana = maxMana;
     }
 
     public void setAlive(boolean alive)
@@ -399,6 +411,8 @@ public abstract class PartyMember {
         return armour;
     }
 
+    public abstract void levelUp();
+
     public abstract void autoLevel();
 
     public abstract String roleToString();
@@ -407,17 +421,13 @@ public abstract class PartyMember {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         PartyMember that = (PartyMember) o;
-
-        if (role != that.role) return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        return ID == that.ID;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + role;
-        return result;
+
+        return Objects.hash(ID);
     }
 }

@@ -1,7 +1,9 @@
 package UI;
 
 import Party.Item.Equipment;
+import Party.Members.Class;
 import Party.Members.PartyMember;
+import Party.Members.Warrior;
 import World.Dungeon;
 import World.Enemy;
 
@@ -233,12 +235,20 @@ public class Battle extends DungeonCrawl {
 
     private int damageCalculations(PartyMember member, Enemy enemy)
     {
-        return member.getDamage() - enemy.getArmour();
+        double damage = 1 - (enemy.getArmour() / 100.0);
+        return (int)(member.getDamage() * damage);
     }
 
     private int damageCalculations(Enemy enemy, PartyMember member)
     {
-        return enemy.getDamage() - member.getArmour();
+        int reduction = member.getArmour();
+        if(member.getRole() == Class.WARRIOR.role()) {
+            Warrior t = (Warrior) member;
+            reduction = t.getWarriorArmour();
+        }
+        double damage = 1 - (reduction / 100.0);
+
+        return (int)(enemy.getDamage() * damage);
     }
 
     private void newTurn()

@@ -4,12 +4,17 @@ import Party.Item.Weapon;
 
 public class Rogue extends PartyMember {
 
+    private static int HP_PER_LEVEL = 5;
+    private static int MANA_PER_LEVEL = 4;
+
     public Rogue(String name)
     {
         super(name, Class.ROUGE.role());
-        baseHP = 500;
-        setHP();
-        dexterity = INITIAL_STAT_UP;
+        baseHP = 90;
+        baseMana = 90;
+        dexterity = 14;
+        willpower = 12;
+        setStats();
     }
 
     public int getDamage()
@@ -18,6 +23,15 @@ public class Rogue extends PartyMember {
         if(leftArm != null)
             dagger = (Weapon) this.leftArm;
         return super.getDamage() + dagger.getDamage() + (strength / 2) + (dexterity / 2);
+    }
+
+    @Override
+    public void levelUp()
+    {
+        baseHP += HP_PER_LEVEL++;
+        baseMana += MANA_PER_LEVEL;
+        level += 1;
+        setStats();
     }
 
     @Override

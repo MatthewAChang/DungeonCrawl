@@ -113,7 +113,7 @@ public class MainMenu extends DungeonCrawl {
             String answer = ui.getTextInput();
             if(answer.matches("1")) {
                 for (PartyMember p : party)
-                    p.resetHP();
+                    p.setStats();
                 ui.appendMain(".................\n");
                 waitForNullInput();
                 break;
@@ -253,7 +253,7 @@ public class MainMenu extends DungeonCrawl {
                     int option = Integer.parseInt(optionStr);
                     PartyMember member = party.getPartyMember(option - 1);
                     ui.clearMainText();
-                    ui.appendMain(member.getName() + "\n");
+                    ui.appendMain(String.format(" %s:  %s\n", member.getName(), Class.toString(member.getRole())));
                     ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
                     ui.appendMain(String.format("%20s%4s%4s%4s%5s", "Base:", member.getBaseStrength(), member.getBaseDexterity(), member.getBaseWillpower(), member.getBaseConstitution() + "\n"));
                     if (member.getHead() != null) {

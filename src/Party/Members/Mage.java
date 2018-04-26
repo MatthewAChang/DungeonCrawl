@@ -2,18 +2,32 @@ package Party.Members;
 
 public class Mage extends PartyMember {
 
+    private static int HP_PER_LEVEL = 4;
+    private static int MANA_PER_LEVEL = 6;
+
     public Mage(String name)
     {
         super(name, Class.MAGE.role());
-        baseHP = 450;
-        setHP();
-        willpower = INITIAL_STAT_UP;
+        baseHP = 85;
+        baseMana = 115;
+        willpower = 14;
+        constitution = 11;
+        setStats();
     }
 
     @Override
     public int getDamage()
     {
         return super.getDamage() + (willpower / 2);
+    }
+
+    @Override
+    public void levelUp()
+    {
+        baseHP += HP_PER_LEVEL;
+        baseMana += MANA_PER_LEVEL++;
+        level += 1;
+        setStats();
     }
 
     @Override
