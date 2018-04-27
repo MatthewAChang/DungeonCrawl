@@ -5,10 +5,10 @@ public abstract class Equipment  {
     private int role;
     private int equip;
 
-    protected int strength;
-    protected int dexterity;
-    protected int willpower;
-    protected int constitution;
+    private int strength;
+    private int dexterity;
+    private int willpower;
+    private int constitution;
 
     public Equipment(String name, int role, int equip, int strength, int dexterity, int willpower, int constitution) {
         this.name = name;

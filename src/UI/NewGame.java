@@ -4,20 +4,20 @@ import Helper.Creation;
 import Party.Members.Class;
 import Party.Members.*;
 
-public class NewGame extends DungeonCrawl{
+public class NewGame extends Game{
 
     public NewGame()
     {
         world.getParty().addMembers(Creation.createNewParty(getInfo()));
         for(PartyMember p : world.getParty())
             levelUp(p);
-        story(1);
+        printStory(1);
     }
 
     private PartyMember getInfo()
     {
         String name;
-        int role = 0;
+        int role;
 
         while(true)
         {
@@ -38,13 +38,12 @@ public class NewGame extends DungeonCrawl{
                 ui.appendMain("1) Warrior  2) Rogue  3) Mage\n");
                 ui.appendMain("4) Help\n");
                 while (true) {
-                    waitForInput();
-                    String roleStr = ui.getTextInput();
-                    if (roleStr.matches("[1-3]")) {
-                        role = Integer.parseInt(roleStr);
+                    int option = checkValidInput();
+                    if (option > 0 && option < 3) {
+                        role = option;
                         break role;
-                    } else if (roleStr.matches("4")) {
-                        help(1);
+                    } else if (option == 4) {
+                        printHelp(1);
                         break;
                     }
                 }
@@ -69,11 +68,10 @@ public class NewGame extends DungeonCrawl{
         ui.appendMain("1) Yes   2) No\n");
         while(true)
         {
-            waitForInput();
-            String sure = ui.getTextInput();
-            if(sure.equals("1"))
+            int option = checkValidInput();
+            if(option == 1)
                 return true;
-            else if(sure.equals("2"))
+            else if(option == 2)
                 return false;
         }
     }

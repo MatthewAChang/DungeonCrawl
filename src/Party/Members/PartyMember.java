@@ -10,40 +10,40 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class PartyMember {
-    protected Armour head;
-    protected Armour body;
-    protected Weapon rightArm;
+    private Armour head;
+    private Armour body;
+    private Weapon rightArm;
     protected Equipment leftArm;
 
-    protected List<Spell> spells;
+    private List<Spell> spells;
 
     protected Party party;
 
     protected String name;
-    protected int ID;
+    private int ID;
     protected int role;
     protected int level;
-    protected int exp;
-    protected int expForNextLvl;
+    private int exp;
+    private int expForNextLvl;
     protected int baseHP;
-    protected int HP;
-    protected int maxHP;
+    private int HP;
+    private int maxHP;
     protected int baseMana;
-    protected int mana;
-    protected int maxMana;
+    private int mana;
+    private int maxMana;
     protected int strength;
     protected int dexterity;
     protected int willpower;
     protected int constitution;
 
-    protected boolean alive;
+    private boolean alive;
 
-    protected boolean attacked;
-    protected int option;
+    private boolean attacked;
+    private int option;
 
-    protected final int INITIAL_STAT = 10;
+    private final int INITIAL_STAT = 10;
 
-    protected final int CONVERSION = 5;
+    private final int CONVERSION = 5;
 
     public final static int LEVEL_UP_POINTS = 3;
 
@@ -331,44 +331,10 @@ public abstract class PartyMember {
         return old;
     }
 
-    private void setStatsFromEquip(Equipment equipment)
-    {
-        strength += equipment.getStrength();
-        dexterity += equipment.getDexterity();
-        willpower += equipment.getWillpower();
-        constitution += equipment.getConstitution();
-        setMaxStats();
-    }
-
-    private void setStatsFromUnequip(Equipment equipment)
-    {
-        strength -= equipment.getStrength();
-        dexterity -= equipment.getDexterity();
-        willpower -= equipment.getWillpower();
-        constitution -= equipment.getConstitution();
-        setMaxStats();
-        party.addEquipment(equipment);
-    }
-
-    public void setStats() {
-        HP = baseHP + CONVERSION * constitution;
-        maxHP = HP;
-        mana = baseMana + CONVERSION * willpower;
-        maxMana = mana;
-    }
-
-    protected void setMaxStats() {
-        maxHP = baseHP + CONVERSION * constitution;
-        if(HP > maxHP)
-            HP = maxHP;
-        maxMana = baseMana + CONVERSION * willpower;
-        if(mana > maxMana)
-            mana = maxMana;
-    }
-
-    public void setAlive(boolean alive)
-    {
-        this.alive = alive;
+    public void resetStats() {
+        HP = maxHP;
+        mana = maxMana;
+        setAlive(true);
     }
 
     public void setAttacked(boolean attacked)
@@ -409,6 +375,45 @@ public abstract class PartyMember {
         if(body != null)
             armour += body.getArmour();
         return armour;
+    }
+
+    private void setStatsFromEquip(Equipment equipment)
+    {
+        strength += equipment.getStrength();
+        dexterity += equipment.getDexterity();
+        willpower += equipment.getWillpower();
+        constitution += equipment.getConstitution();
+        setMaxStats();
+    }
+
+    private void setStatsFromUnequip(Equipment equipment)
+    {
+        strength -= equipment.getStrength();
+        dexterity -= equipment.getDexterity();
+        willpower -= equipment.getWillpower();
+        constitution -= equipment.getConstitution();
+        setMaxStats();
+    }
+
+    protected void setStats() {
+        HP = baseHP + CONVERSION * constitution;
+        maxHP = HP;
+        mana = baseMana + CONVERSION * willpower;
+        maxMana = mana;
+    }
+
+    private void setMaxStats() {
+        maxHP = baseHP + CONVERSION * constitution;
+        if(HP > maxHP)
+            HP = maxHP;
+        maxMana = baseMana + CONVERSION * willpower;
+        if(mana > maxMana)
+            mana = maxMana;
+    }
+
+    private void setAlive(boolean alive)
+    {
+        this.alive = alive;
     }
 
     public abstract void levelUp();

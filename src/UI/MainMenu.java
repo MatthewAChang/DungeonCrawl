@@ -9,7 +9,7 @@ import Party.Members.PartyMember;
 import World.Dungeon;
 import World.Town;
 
-public class MainMenu extends DungeonCrawl {
+public class MainMenu extends Game {
 
     public MainMenu()
     {
@@ -33,11 +33,9 @@ public class MainMenu extends DungeonCrawl {
             ui.appendMain("8) Help\n");
             while(true)
             {
-                waitForInput();
-                String optionStr = ui.getTextInput();
-                if(optionStr.matches("[1-8]"))
+                int option = checkValidInput();
+                if(option > 0 && option < 9)
                 {
-                    int option = Integer.parseInt(optionStr);
                     ui.clearMainText();
                     switch (option)
                     {
@@ -63,7 +61,7 @@ public class MainMenu extends DungeonCrawl {
                             stats();
                             break;
                         case 8:
-                            help(3);
+                            printHelp(3);
                     }
                     break;
                 }
@@ -86,39 +84,37 @@ public class MainMenu extends DungeonCrawl {
         }
         ui.appendMain(i + ") Back\n");
         while(true) {
-            waitForInput();
-            String answer = ui.getTextInput();
-            if(answer.matches("[0-9]+")) {
-                int option = Integer.parseInt(answer);
-                if(option > 0 && option <= world.getCurrentTown().getDungeons().size()) {
-                    new Battle(world.getCurrentTown().getDungeon(option - 1));
-                    break;
-                }
-                else if(option == i) {
-                    break;
-                }
+            int option = checkValidInput();
+            if(option > 0 && option < i) {
+                new Battle(world.getCurrentTown().getDungeon(option - 1));
+                break;
+            } else if(option == i) {
+                break;
             }
         }
-
     }
 
     private void inn()
     {
         ui.appendMain("Inn Keeper:\n");
-        ui.appendMain("Would you like to stay the night?\n");
+        ui.appendMain("Would you like to stay the night(10G)?\n");
         ui.appendMain("1) Yes  2) No\n");
         while(true)
         {
-            waitForInput();
-            String answer = ui.getTextInput();
-            if(answer.matches("1")) {
-                for (PartyMember p : world.getParty())
-                    p.setStats();
+            int option = checkValidInput();
+            if(option == 1) {
+                if(world.getParty().minusGold(10))
+                    for (PartyMember p : world.getParty())
+                        p.resetStats();
+                else {
+                    ui.appendMain("You do not have enough gold.\n");
+                    waitForNullInput();
+                }
                 ui.appendMain(".................\n");
                 waitForNullInput();
                 break;
             }
-            else if(answer.matches("2"))
+            else if(option == 2)
             {
                 break;
             }
@@ -133,23 +129,20 @@ public class MainMenu extends DungeonCrawl {
         while(true)
         {
             ui.clearMainText();
-            int count = 1;
+            int i = 1;
             ui.appendMain(String.format("%24s%4s%4s%5s\n", "Str", "Dex", "Wil", "Con"));
             for(Equipment e: world.getParty().getInventory())
             {
-                ui.appendMain(String.format("%2s) %17s%4s%4s%4s%5s\n", count++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
+                ui.appendMain(String.format("%2s) %17s%4s%4s%4s%5s\n", i++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
             }
-            ui.appendMain(String.format("%2s) Back\n", count));
+            ui.appendMain(String.format("%2s) Back\n", i));
             while(true) {
-                waitForInput();
-                String optionStr = ui.getTextInput();
-                if(optionStr.matches("[0-9]+")) {
-                    int option = Integer.parseInt(optionStr);
-                    if(option == count) break inventory;
-                    else if(option < count && option > 0) {
-                        equip(option - 1);
-                        break;
-                    }
+                int option = checkValidInput();
+                if(option > 0 && option < i) {
+                    equip(option - 1);
+                    break;
+                } else if(option == i) {
+                    break inventory;
                 }
             }
         }
@@ -159,13 +152,11 @@ public class MainMenu extends DungeonCrawl {
     {
         partyView("Who to equip to:\n");
         while(true) {
-            waitForInput();
-            String optionStr = ui.getTextInput();
-            if (optionStr.matches("[1-3]")) {
-                int option = Integer.parseInt(optionStr);
+            int option = checkValidInput();
+            if (option > 0 && option <= world.getParty().getPartySize()) {
                 equip(option - 1, equipment);
                 break;
-            } else if (optionStr.matches("4"))
+            } else if (option == world.getParty().getPartySize() + 1)
                 break;
         }
     }
@@ -183,16 +174,18 @@ public class MainMenu extends DungeonCrawl {
         Equipment old = null;
 
         if(e.getEquip() == Restriction.HEAD.equip())
-            p.equipHead((Armour)e);
+            old = p.equipHead((Armour)e);
         else if(e.getEquip() == Restriction.BODY.equip())
-            p.equipBody((Armour)e);
+            old = p.equipBody((Armour)e);
         else if(e.getEquip() == Restriction.RIGHT_ARM.equip())
-            p.equipRightArm((Weapon) e);
+            old = p.equipRightArm((Weapon) e);
         else if(e.getEquip() == Restriction.LEFT_ARM.equip())
-            p.equipLeftArm(e);
+            old = p.equipLeftArm(e);
         else if(e.getEquip() == Restriction.ARM.equip())
-            if(arm()) p.equipLeftArm(e);
-            else p.equipRightArm((Weapon)e);
+            if(arm())
+                old = p.equipLeftArm(e);
+            else
+                old = p.equipRightArm((Weapon)e);
 
         world.getParty().removeEquipment(equipment);
         if(old != null)
@@ -206,11 +199,10 @@ public class MainMenu extends DungeonCrawl {
             ui.appendMain("1) Left\n");
             ui.appendMain("2) Right\n");
             while(true) {
-                waitForInput();
-                String option = ui.getTextInput();
-                if(option.matches("1"))
+                int option = checkValidInput();
+                if(option == 1)
                     return true;
-                else if(option.matches("2"))
+                else if(option == 2)
                     return false;
             }
         }
@@ -220,24 +212,20 @@ public class MainMenu extends DungeonCrawl {
         travel:
         while(true) {
             ui.appendMain("Where would you like to travel:\n");
-            int count = 1;
+            int i = 1;
             for(Town t: world)
             {
-                ui.appendMain(count++ + ") " + t.getName() + "\n");
+                ui.appendMain(i++ + ") " + t.getName() + "\n");
             }
-            ui.appendMain(count + ") Back\n");
+            ui.appendMain(i + ") Back\n");
             while(true) {
-                waitForInput();
-                String optionStr = ui.getTextInput();
-                if(optionStr.matches("[0-9]+")) {
-                    int option = Integer.parseInt(optionStr);
-                    if(option == count) break travel;
-                    else if(option < count && option > 0) {
-                        world.setCurrentTown(option - 1);
-                        updateInformation();
-                        break travel;
-                    }
-                }
+                int option = checkValidInput();
+                if(option > 0 && option < i) {
+                    world.setCurrentTown(option - 1);
+                    updateInformation();
+                    break travel;
+                } else if(option == i)
+                    break travel;
             }
         }
     }
@@ -247,10 +235,8 @@ public class MainMenu extends DungeonCrawl {
         while(true) {
             partyView("Who to view:\n");
             while (true) {
-                waitForInput();
-                String optionStr = ui.getTextInput();
-                if (optionStr.matches("[1-3]")) {
-                    int option = Integer.parseInt(optionStr);
+                int option = checkValidInput();
+                if (option > 0 && option <= world.getParty().getPartySize()) {
                     PartyMember member = world.getParty().getPartyMember(option - 1);
                     ui.clearMainText();
                     ui.appendMain(String.format(" %s:  %s\n", member.getName(), Class.toString(member.getRole())));
@@ -276,7 +262,7 @@ public class MainMenu extends DungeonCrawl {
                     waitForNullInput();
                     ui.clearMainText();
                     break;
-                } else if (optionStr.matches("4"))
+                } else if (option == world.getParty().getPartySize() + 1)
                     break stats;
             }
         }

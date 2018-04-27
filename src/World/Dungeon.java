@@ -16,8 +16,7 @@ public class Dungeon extends Location implements Iterable<Enemy> {
         this.enemies = new ArrayList<>();
 
         if(enemies != null)
-            for(Enemy e : enemies)
-                this.enemies.add(e);
+            this.enemies.addAll(enemies);
     }
 
     public Enemy getEnemy(int get) {

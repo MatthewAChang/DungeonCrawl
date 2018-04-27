@@ -19,10 +19,12 @@ public class Rogue extends PartyMember {
 
     public int getDamage()
     {
-        Weapon dagger = null;
-        if(leftArm != null)
-            dagger = (Weapon) this.leftArm;
-        return super.getDamage() + dagger.getDamage() + (strength / 2) + (dexterity / 2);
+        int damage = super.getDamage()  + (strength / 2) + (dexterity / 2);
+        if(leftArm != null) {
+            Weapon dagger = (Weapon) this.leftArm;
+            damage += dagger.getDamage();
+        }
+        return damage;
     }
 
     @Override

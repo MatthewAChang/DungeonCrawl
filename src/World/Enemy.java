@@ -38,8 +38,7 @@ public class Enemy extends NPC {
         this.expDrop = expDrop;
         this.drops = new ArrayList<>();
         if (drops != null)
-            for (Equipment e : drops)
-                this.drops.add(e);
+            this.drops.addAll(drops);
 
         attacked = false;
         target = -1;
@@ -69,11 +68,6 @@ public class Enemy extends NPC {
         return alive;
     }
 
-
-    public boolean isBoss() {
-        return boss;
-    }
-
     public int getGoldDrop() {
         return goldDrop;
     }
@@ -88,10 +82,6 @@ public class Enemy extends NPC {
 
     public int getTarget() {
         return target;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
     }
 
     public void setAttacked(boolean attacked) {
@@ -110,10 +100,6 @@ public class Enemy extends NPC {
             HP -= damage;
     }
 
-    public List<Equipment> getDrops() {
-        return drops;
-    }
-
     public Equipment getRandomDrop()
     {
         if(drops.isEmpty())
@@ -128,6 +114,14 @@ public class Enemy extends NPC {
             return drops.get(num);
         else
             return null;
+    }
+
+    private boolean isBoss() {
+        return boss;
+    }
+
+    private void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     @Override

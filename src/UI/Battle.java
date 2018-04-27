@@ -10,7 +10,7 @@ import World.Enemy;
 import java.util.List;
 import java.util.Random;
 
-public class Battle extends DungeonCrawl {
+public class Battle extends Game {
 
     private Dungeon dungeon;
 
@@ -43,27 +43,31 @@ public class Battle extends DungeonCrawl {
                         ui.clearThenAppendMain(p.getName() + ":\n");
                         ui.appendMain("1) Attack  2) Spell  3) Item  4) Run\n");
                         ui.appendMain("5) Help\n");
+                        cont:
                         while (true) {
-                            waitForInput();
-                            String optionStr = ui.getTextInput();
-                            if (optionStr.matches("[14]")) {
-                                int option = Integer.parseInt(optionStr);
+                            int option = checkValidInput();
+                            if (option > 0 && option < 5) {
                                 switch (option) {
                                     case 1:
-                                        option = (option * 100) + attack();
-                                        break;
-//                            case 2:
-//                                break;
-//                            case 3:
-//                                break;
+                                        int attack = attack();
+                                        if(attack == -1) {
+                                            break cont;
+                                        } else {
+                                            option = (option * 100) + attack;
+                                            break;
+                                        }
+                                    case 2:
+                                        break cont;
+                                    case 3:
+                                        break cont;
                                     case 4:
                                         if (!run())
                                             break battle;
                                 }
                                 p.setOption(option);
                                 break selection;
-                            } else if (optionStr.matches("5"))
-                                help(4);
+                            } else if (option == 5)
+                                printHelp(4);
                             break;
                         }
                     }
@@ -90,9 +94,7 @@ public class Battle extends DungeonCrawl {
 
     private boolean checkEndBattle()
     {
-        if(dungeon.allDead() || world.getParty().allDead())
-            return false;
-        return true;
+        return !(dungeon.allDead() || world.getParty().allDead());
     }
 
     private void spoilsOfBattle()
@@ -128,26 +130,26 @@ public class Battle extends DungeonCrawl {
 
     private int attack()
     {
-        ui.appendMain("Who to attack:");
+        ui.clearThenAppendMain("Who to attack:\n");
+        int back = 1;
         for(Enemy e : dungeon)
         {
-            if(e.getID() % 3 == 1)
-                ui.appendMain("\n");
             ui.appendMain(e.getID() +  ". " + e.getName() + "  ");
+            if(e.getID() % 3 == 0)
+                ui.appendMain("\n");
+            back = e.getID() + 1;
         }
+        ui.appendMain(back + ". Back");
         ui.appendMain("\n");
         while(true)
         {
-            waitForInput();
-            String optionStr = ui.getTextInput();
-            if (optionStr.matches("[0-9]{1,2}"))
-            {
-                int option = Integer.parseInt(optionStr);
-                for(Enemy e : dungeon)
-                    if(e.getID() == option && e.isAlive())
-                    {
-                        return option;
-                    }
+            int option = checkValidInput();
+            if(option == back)
+                return -1;
+            for(Enemy e : dungeon) {
+                if (e.getID() == option && e.isAlive()) {
+                    return option;
+                }
             }
         }
     }
@@ -268,8 +270,6 @@ public class Battle extends DungeonCrawl {
         for(Enemy e : dungeon)
             if(e.isAlive() && !e.hasAttacked())
                 again = true;
-        if(!again)
-            return false;
-        return true;
+        return again;
     }
 }

@@ -29,10 +29,6 @@ public class Town extends Location implements Iterable<Dungeon>{
         }
     }
 
-    public List<Dungeon> getDungeons() {
-        return dungeons;
-    }
-
     public Dungeon getDungeon(int index) {
         return dungeons.get(index);
     }

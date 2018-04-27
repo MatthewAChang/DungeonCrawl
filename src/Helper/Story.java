@@ -1,8 +1,8 @@
 package Helper;
 
-import UI.DungeonCrawl;
+import UI.Game;
 
-public class Story {
+public class Story extends Game {
 
     public static String story(int story) {
         String str;
@@ -16,12 +16,12 @@ public class Story {
         return str;
     }
 
-    public static String startMessage()
+    private static String startMessage()
     {
         String str;
-        str =  "Welcome to the world of " + DungeonCrawl.world.getName() + ".\n";
-        str += "    You begin in the town of " + DungeonCrawl.world.getCurrentTown().getName() + ". This is the town where all adventurers begin and where you will make a legacy. ";
-        str += "On the main town menu, there will be several options. You can go exploring dungeons and discover riches, visit the shop, talk to townsfolk, and visit the inn.\n";
+        str =  "Welcome to the world of " + Game.world.getName() + ".\n";
+        str += "    You begin in the town of " + Game.world.getCurrentTown().getName() + ". This is the town where all adventurers begin and where you will make a legacy. ";
+        str += "On the main town menu, there will be several options. You can go exploring dungeons and discover riches, visit the shop or inn, and talk to townsfolk.\n";
         return str;
     }
 }

@@ -53,7 +53,7 @@ public class Creation {
         return members;
     }
 
-    private static List<PartyMember> addEquipment(List<PartyMember> members) {
+    private static void addEquipment(List<PartyMember> members) {
         for(PartyMember p : members)
         {
             if(p.getRole() == Class.WARRIOR.role())
@@ -74,7 +74,6 @@ public class Creation {
                 p.equipRightArm(new Weapon("Old Staff", Class.MAGE.role(), Restriction.RIGHT_ARM.equip(),0, 0, 2, 0, 60));
             }
         }
-        return members;
     }
 
     public static List<Town> createTowns() {

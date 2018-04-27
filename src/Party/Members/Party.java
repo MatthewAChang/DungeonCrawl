@@ -53,6 +53,10 @@ public class Party implements Iterable<PartyMember>{
         return partyMembers;
     }
 
+    public int getPartySize() {
+        return partyMembers.size();
+    }
+
     public boolean allDead()
     {
         for(PartyMember p : this)
@@ -88,6 +92,13 @@ public class Party implements Iterable<PartyMember>{
     public void addGold(int gold)
     {
         this.gold += gold;
+    }
+
+    public boolean minusGold(int gold) {
+        if(gold > this.gold)
+            return false;
+        this.gold -= gold;
+        return true;
     }
 
     @Override

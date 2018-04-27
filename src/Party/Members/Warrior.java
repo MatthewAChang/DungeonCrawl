@@ -25,13 +25,12 @@ public class Warrior extends PartyMember {
 
     public int getWarriorArmour()
     {
-        int armour = 0;
+        int armour = super.getArmour();;
         if(leftArm != null)
         {
             Armour shield = (Armour) leftArm;
             armour += shield.getArmour();
         }
-        armour += super.getArmour();
         return armour;
     }
 
