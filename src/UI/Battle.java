@@ -35,7 +35,7 @@ public class Battle extends DungeonCrawl {
             updateInformation();
             newTurn();
             // Player picks target for attack
-            for(PartyMember p : party)
+            for(PartyMember p : world.getParty())
             {
                 if(p.isAlive()) {
                     selection:
@@ -75,8 +75,8 @@ public class Battle extends DungeonCrawl {
                 int option;
                 check:
                 while (true) {
-                    option = rand.nextInt(party.getPartyMembers().size()) + 1;
-                    for(PartyMember p : party)
+                    option = rand.nextInt(world.getParty().getPartyMembers().size()) + 1;
+                    for(PartyMember p : world.getParty())
                         if(option == p.getID() && p.isAlive())
                             break check;
                 }
@@ -90,7 +90,7 @@ public class Battle extends DungeonCrawl {
 
     private boolean checkEndBattle()
     {
-        if(dungeon.allDead() || party.allDead())
+        if(dungeon.allDead() || world.getParty().allDead())
             return false;
         return true;
     }
@@ -100,7 +100,7 @@ public class Battle extends DungeonCrawl {
         ui.clearMainText();
         if(dungeon.allDead())
         {
-            for(PartyMember p : party)
+            for(PartyMember p : world.getParty())
             {
                 if(p.isAlive()) {
                     ui.appendMain(p.getName() + " earned " + dungeon.getExp() + " exp.\n");
@@ -110,7 +110,7 @@ public class Battle extends DungeonCrawl {
                     }
                 }
             }
-            party.addGold(dungeon.getGold());
+            world.getParty().addGold(dungeon.getGold());
             ui.appendMain("Drops:\n");
             ui.appendMain(dungeon.getGold() + " gold\n");
             List<Equipment> equipmentDrops = dungeon.getDrops();
@@ -118,7 +118,7 @@ public class Battle extends DungeonCrawl {
             {
                 for (Equipment equip : equipmentDrops)
                 {
-                    party.addEquipment(equip);
+                    world.getParty().addEquipment(equip);
                     ui.appendMain(equip.getName() + "\n");
                 }
             }
@@ -175,7 +175,7 @@ public class Battle extends DungeonCrawl {
             Random rand = new Random();
             if(rand.nextInt(2) == 0)
             {
-                PartyMember p = party.getPartyMember(rand.nextInt(party.getPartyMembers().size()));
+                PartyMember p = world.getParty().getPartyMember(rand.nextInt(world.getParty().getPartyMembers().size()));
                 if(p.isAlive() && !p.hasAttacked())
                 {
                     int option = p.getOption();
@@ -209,7 +209,7 @@ public class Battle extends DungeonCrawl {
                 Enemy e = dungeon.getEnemy(rand.nextInt(dungeon.getEnemies().size()));
                 if(e.isAlive() && !e.hasAttacked())
                 {
-                    for(PartyMember p : party)
+                    for(PartyMember p : world.getParty())
                     {
                         if(p.getID() == e.getTarget())
                         {
@@ -253,7 +253,7 @@ public class Battle extends DungeonCrawl {
 
     private void newTurn()
     {
-        for(PartyMember p : party)
+        for(PartyMember p : world.getParty())
             p.setAttacked(false);
         for(Enemy e : dungeon)
             e.setAttacked(false);
@@ -262,7 +262,7 @@ public class Battle extends DungeonCrawl {
     private boolean checkEndTurn()
     {
         boolean again = false;
-        for(PartyMember p : party)
+        for(PartyMember p : world.getParty())
             if(p.isAlive() && !p.hasAttacked())
                 again = true;
         for(Enemy e : dungeon)

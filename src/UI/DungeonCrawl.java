@@ -1,7 +1,7 @@
 package UI;
 
 import Helper.Help;
-import Party.Members.Party;
+import Helper.Story;
 import Party.Members.PartyMember;
 import World.Dungeon;
 import World.Enemy;
@@ -9,14 +9,12 @@ import World.World;
 
 public class DungeonCrawl {
     protected static UIFrame ui;
-    protected static World world;
-    protected static Party party;
+    public static World world;
 
     public static void main(String[] args)
     {
         ui = ui.getInstance();
         world = world.getInstance();
-        party = party.getInstance();
         new NewGame();
         new MainMenu();
     }
@@ -33,7 +31,7 @@ public class DungeonCrawl {
 
     private static void updatePartyInfo()
     {
-        for(PartyMember p : party)
+        for(PartyMember p : world.getParty())
         {
             String basic = String.format("L.%-3s%-10sEXP:%s", p.getLevel(), p.getName(), p.getExpForNextLvlRelative());
             ui.appendParty(basic + "\n");
@@ -54,6 +52,13 @@ public class DungeonCrawl {
         }
     }
 
+    protected static void story(int index) {
+        ui.clearMainText();
+        ui.appendMain(Story.story(index));
+        waitForNullInput();
+        ui.clearMainText();
+    }
+
     protected static void help(int index) {
         ui.clearMainText();
         ui.appendMain(Help.help(index));
@@ -64,22 +69,22 @@ public class DungeonCrawl {
     protected static void levelUp(PartyMember member)
     {
         int pointsLeft = PartyMember.LEVEL_UP_POINTS;
-        if(member == party.getPlayer())
+        if(member == world.getParty().getPlayer())
         {
             while (pointsLeft > 0) {
                 ui.clearMainText();
                 ui.appendMain("You have leveled up!\n");
                 ui.appendMain("You have " + pointsLeft + " skill points left:\n");
-                ui.appendMain(String.format("%-16s%s", "1) Strength", party.getPlayer().getBaseStrength() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "2) Dexterity", party.getPlayer().getBaseDexterity() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "3) Willpower", party.getPlayer().getBaseWillpower() + "\n"));
-                ui.appendMain(String.format("%-16s%s", "4) Constitution", party.getPlayer().getBaseConstitution() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "1) Strength", world.getParty().getPlayer().getBaseStrength() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "2) Dexterity", world.getParty().getPlayer().getBaseDexterity() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "3) Willpower", world.getParty().getPlayer().getBaseWillpower() + "\n"));
+                ui.appendMain(String.format("%-16s%s", "4) Constitution", world.getParty().getPlayer().getBaseConstitution() + "\n"));
                 ui.appendMain("5) Help\n");
                 while (true) {
                     waitForInput();
                     String pointStr = ui.getTextInput();
                     if (pointStr.matches("[1-4]")) {
-                        party.getPlayer().levelUp(Integer.parseInt(pointStr));
+                        world.getParty().getPlayer().levelUp(Integer.parseInt(pointStr));
                         pointsLeft--;
                     }
                     else if (pointStr.matches("5"))
@@ -88,7 +93,7 @@ public class DungeonCrawl {
                 }
 
             }
-            party.getPlayer().levelUp();
+            world.getParty().getPlayer().levelUp();
             ui.clearMainText();
         }
         else

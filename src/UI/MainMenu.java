@@ -112,7 +112,7 @@ public class MainMenu extends DungeonCrawl {
             waitForInput();
             String answer = ui.getTextInput();
             if(answer.matches("1")) {
-                for (PartyMember p : party)
+                for (PartyMember p : world.getParty())
                     p.setStats();
                 ui.appendMain(".................\n");
                 waitForNullInput();
@@ -135,7 +135,7 @@ public class MainMenu extends DungeonCrawl {
             ui.clearMainText();
             int count = 1;
             ui.appendMain(String.format("%24s%4s%4s%5s\n", "Str", "Dex", "Wil", "Con"));
-            for(Equipment e: party.getInventory())
+            for(Equipment e: world.getParty().getInventory())
             {
                 ui.appendMain(String.format("%2s) %17s%4s%4s%4s%5s\n", count++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
             }
@@ -171,8 +171,8 @@ public class MainMenu extends DungeonCrawl {
     }
 
     private void equip(int member, int equipment) {
-        PartyMember p = party.getPartyMember(member);
-        Equipment e = party.getEquipment(equipment);
+        PartyMember p = world.getParty().getPartyMember(member);
+        Equipment e = world.getParty().getEquipment(equipment);
 
         if(e.getRole() != p.getRole()) {
             ui.appendMain("Can only equip to " + Class.toString(e.getRole()) + "\n");
@@ -194,9 +194,9 @@ public class MainMenu extends DungeonCrawl {
             if(arm()) p.equipLeftArm(e);
             else p.equipRightArm((Weapon)e);
 
-        party.removeEquipment(equipment);
+        world.getParty().removeEquipment(equipment);
         if(old != null)
-            party.addEquipment(old);
+            world.getParty().addEquipment(old);
         updateInformation();
     }
 
@@ -251,7 +251,7 @@ public class MainMenu extends DungeonCrawl {
                 String optionStr = ui.getTextInput();
                 if (optionStr.matches("[1-3]")) {
                     int option = Integer.parseInt(optionStr);
-                    PartyMember member = party.getPartyMember(option - 1);
+                    PartyMember member = world.getParty().getPartyMember(option - 1);
                     ui.clearMainText();
                     ui.appendMain(String.format(" %s:  %s\n", member.getName(), Class.toString(member.getRole())));
                     ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
@@ -286,7 +286,7 @@ public class MainMenu extends DungeonCrawl {
     {
         ui.appendMain(statement);
         int count = 1;
-        for (PartyMember p : party)
+        for (PartyMember p : world.getParty())
             ui.appendMain(count++ + ". " + p.getName() + "  ");
         ui.appendMain("\n");
         ui.appendMain(count + ". Back\n");

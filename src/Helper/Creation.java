@@ -4,6 +4,7 @@ import Party.Item.Armour;
 import Party.Item.Equipment;
 import Party.Item.Restriction;
 import Party.Item.Weapon;
+import Party.Members.*;
 import Party.Members.Class;
 import World.Dungeon;
 import World.Enemy;
@@ -24,6 +25,57 @@ public class Creation {
             {"The Green Forest", "The Cave of Trolls", "Forgotten Place", "The"}
 
     };
+
+    public static List<PartyMember> createNewParty(PartyMember player) {
+        List<PartyMember> members = addPartyMembers(player);
+        addEquipment(members);
+        return members;
+    }
+
+    private static List<PartyMember> addPartyMembers(PartyMember player) {
+        List<PartyMember> members = new ArrayList<>();
+        members.add(player);
+        if(player.getRole() == Class.WARRIOR.role())
+        {
+            members.add(new Rogue("Leliana"));
+            members.add(new Mage("Vanille"));
+        }
+        else if(player.getRole() == Class.ROUGE.role())
+        {
+            members.add(new Warrior("Marth"));
+            members.add(new Mage("Luxanna"));
+        }
+        else if(player.getRole() == Class.MAGE.role())
+        {
+            members.add(new Warrior("Ogma"));
+            members.add(new Rogue("Rose"));
+        }
+        return members;
+    }
+
+    private static List<PartyMember> addEquipment(List<PartyMember> members) {
+        for(PartyMember p : members)
+        {
+            if(p.getRole() == Class.WARRIOR.role())
+            {
+                p.equipBody(new Armour("Bronze Armour", Class.WARRIOR.role(), Restriction.BODY.equip(),1, 0, 0, 1, 10));
+                p.equipRightArm(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),1, 0, 0, 0, 50));
+                p.equipLeftArm(new Armour("Bronze Shield", Class.WARRIOR.role(), Restriction.LEFT_ARM.equip(),0, 0, 0, 1, 2));
+            }
+            else if(p.getRole() == Class.ROUGE.role())
+            {
+                p.equipBody(new Armour("Worn Cloak", Class.ROUGE.role(), Restriction.BODY.equip(),1, 0, 0, 1, 5));
+                p.equipRightArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
+                p.equipLeftArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
+            }
+            else if(p.getRole() == Class.MAGE.role())
+            {
+                p.equipBody(new Armour("Old Tunic", Class.MAGE.role(), Restriction.BODY.equip(),0, 0, 1, 1, 5));
+                p.equipRightArm(new Weapon("Old Staff", Class.MAGE.role(), Restriction.RIGHT_ARM.equip(),0, 0, 2, 0, 60));
+            }
+        }
+        return members;
+    }
 
     public static List<Town> createTowns() {
         List<Town> towns = new ArrayList<>();

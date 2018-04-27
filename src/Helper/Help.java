@@ -1,6 +1,6 @@
 package Helper;
 
-public class Help{
+public class Help {
     public static String help(int help) {
         String str;
         switch(help) {
