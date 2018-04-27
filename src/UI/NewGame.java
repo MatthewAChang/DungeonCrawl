@@ -48,7 +48,7 @@ public class NewGame extends DungeonCrawl{
                         role = Integer.parseInt(roleStr);
                         break role;
                     } else if (roleStr.matches("4")) {
-                        Help.help(1);
+                        help(1);
                         break;
                     }
                 }

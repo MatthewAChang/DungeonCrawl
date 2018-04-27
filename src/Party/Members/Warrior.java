@@ -64,10 +64,4 @@ public class Warrior extends PartyMember {
         }
         levelUp();
     }
-
-    @Override
-    public String roleToString()
-    {
-        return "Warrior";
-    }
 }

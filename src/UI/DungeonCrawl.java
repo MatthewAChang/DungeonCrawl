@@ -1,5 +1,6 @@
 package UI;
 
+import Helper.Help;
 import Party.Members.Party;
 import Party.Members.PartyMember;
 import World.Dungeon;
@@ -53,7 +54,12 @@ public class DungeonCrawl {
         }
     }
 
-
+    protected static void help(int index) {
+        ui.clearMainText();
+        ui.appendMain(Help.help(index));
+        waitForNullInput();
+        ui.clearMainText();
+    }
 
     protected static void levelUp(PartyMember member)
     {
@@ -77,7 +83,7 @@ public class DungeonCrawl {
                         pointsLeft--;
                     }
                     else if (pointStr.matches("5"))
-                        Help.help(2);
+                        help(2);
                     break;
                 }
 

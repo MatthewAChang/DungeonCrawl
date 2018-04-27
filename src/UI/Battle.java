@@ -63,7 +63,7 @@ public class Battle extends DungeonCrawl {
                                 p.setOption(option);
                                 break selection;
                             } else if (optionStr.matches("5"))
-                                Help.help(4);
+                                help(4);
                             break;
                         }
                     }

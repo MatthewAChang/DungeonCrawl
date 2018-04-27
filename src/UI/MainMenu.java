@@ -63,7 +63,7 @@ public class MainMenu extends DungeonCrawl {
                             stats();
                             break;
                         case 8:
-                            Help.help(3);
+                            help(3);
                     }
                     break;
                 }

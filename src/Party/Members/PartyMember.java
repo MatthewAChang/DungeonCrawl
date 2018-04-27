@@ -415,8 +415,6 @@ public abstract class PartyMember {
 
     public abstract void autoLevel();
 
-    public abstract String roleToString();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

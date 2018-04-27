@@ -50,10 +50,4 @@ public class Mage extends PartyMember {
         }
         levelUp();
     }
-
-    @Override
-    public String roleToString()
-    {
-        return "Mage";
-    }
 }

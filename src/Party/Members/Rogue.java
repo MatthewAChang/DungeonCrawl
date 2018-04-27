@@ -54,10 +54,4 @@ public class Rogue extends PartyMember {
         }
         levelUp();
     }
-
-    @Override
-    public String roleToString()
-    {
-        return "Rogue";
-    }
 }

@@ -1,6 +1,7 @@
 package World;
 
-import java.util.ArrayList;
+import Helper.Creation;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,30 +13,17 @@ public class World implements Iterable<Town>{
     private List<Town> towns;
     private Town currentTown;
 
-    protected String[][] names = {
-            {"Kingsland", "Bright Garden", "Cave of Glass", "King's Lair"},
-            {"The Green Forest", "The Cave of Trolls", "Forgotten Place", "The"}
-
-    };
-
     private World(String name) {
         this.name = name;
-        this.towns = new ArrayList<>();
-        addTowns();
+        this.towns = Creation.createTowns();
+        this.currentTown = this.towns.get(0);
     }
 
     public static World getInstance() {
         if(instance == null) {
-            instance = new World("Crystallis");
+            instance = new World(Creation.getWorldName());
         }
         return instance;
-    }
-
-    private void addTowns() {
-        for(int i = 0; i < names.length; i++) {
-            towns.add(new Town(i + 1, names[i]));
-        }
-        currentTown = this.towns.get(0);
     }
 
     public String getName() {
