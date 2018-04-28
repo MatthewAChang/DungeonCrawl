@@ -83,15 +83,13 @@ public class Battle extends Game {
             // Enemy picks target for attack
             for(Enemy e : dungeon) {
                 Random rand = new Random();
-                int option;
-                check:
                 while (true) {
-                    option = rand.nextInt(world.getParty().getPartyMembers().size()) + 1;
-                    for(PartyMember p : world.getParty())
-                        if(option == p.getId() && p.isAlive())
-                            break check;
+                    int option = rand.nextInt(world.getParty().getPartyMembers().size()) + 1;
+                    if(world.getParty().getPartyMember(option - 1).isAlive()) {
+                        e.setOption(option);
+                        break;
+                    }
                 }
-                e.setOption(option);
             }
             battleCalculations();
             fighting = checkEndBattle();
@@ -151,10 +149,8 @@ public class Battle extends Game {
             int option = checkValidInput();
             if(option == i)
                 return -1;
-            for(Enemy e : dungeon) {
-                if (e.getId() == option && e.isAlive()) {
-                    return option;
-                }
+            if (dungeon.getEnemies().get(option - 1).isAlive()) {
+                return option;
             }
         }
     }
@@ -174,10 +170,8 @@ public class Battle extends Game {
             int option = checkValidInput();
             if(option == i)
                 return -1;
-            for(PartyMember p : world.getParty()) {
-                if (p.getId() == option && p.isAlive()) {
-                    return option;
-                }
+            if (world.getParty().getPartyMember(option - 1).isAlive()) {
+                return option;
             }
         }
     }
@@ -210,7 +204,7 @@ public class Battle extends Game {
                         return (spell.getId() * 10) + targetAlly();
                     // AOE
                     } else {
-                        return spell.getId();
+                        return spell.getId() * 10;
                     }
                 }
             }
@@ -220,7 +214,7 @@ public class Battle extends Game {
     private boolean run()
     {
         Random rand = new Random();
-        if(rand.nextInt(100) + 1 > 99) {
+        if(rand.nextInt(100) + 1 > 5) {
             ui.clearMainText();
             ui.appendMain("You ran from battle!\n");
             waitForNullInput();
@@ -238,33 +232,22 @@ public class Battle extends Game {
         while(fight)
         {
             Random rand = new Random();
-            if(rand.nextInt(2) == 0)
-            {
+            if(rand.nextInt(2) == 0) {
                 PartyMember p = world.getParty().getPartyMember(rand.nextInt(world.getParty().getPartyMembers().size()));
-                if(p.isAlive() && !p.hasAttacked())
-                {
+                if(p.isAlive() && !p.hasAttacked()) {
                     int option = p.getOption();
-                    switch(option / 100)
-                    {
+                    switch(option / 100) {
                         case 1:
-                            for(Enemy e : dungeon)
-                            {
-                                if(e.getId() == option % 100)
-                                {
-                                    if(e.isAlive()) {
-                                        e.damage(damageCalculations(p, e));
-                                        updateInformation();
-                                        ui.appendMain(p.getName() + " attacked " + e.getName() + " for " + damageCalculations(p, e) + ".\n");
-                                    }
-                                    else
-                                    {
-                                        ui.appendMain(p.getName() + " attacked " + e.getName() + ", but " + e.getName() + " is already dead.\n");
-                                    }
-                                    waitForNullInput();
-                                    p.setAttacked(true);
-                                    break;
-                                }
+                            Enemy e = dungeon.getEnemies().get((option % 100) - 1);
+                            if(e.isAlive()) {
+                                e.damage(damageCalculations(p, e));
+                                updateInformation();
+                                ui.appendMain(p.getName() + " attacked " + e.getName() + " for " + damageCalculations(p, e) + ".\n");
+                            } else {
+                                ui.appendMain(p.getName() + " attacked " + e.getName() + ", but " + e.getName() + " is already dead.\n");
                             }
+                            waitForNullInput();
+                            p.setAttacked(true);
                             break;
                     }
                 }
@@ -274,23 +257,16 @@ public class Battle extends Game {
                 Enemy e = dungeon.getEnemy(rand.nextInt(dungeon.getEnemies().size()));
                 if(e.isAlive() && !e.hasAttacked())
                 {
-                    for(PartyMember p : world.getParty())
-                    {
-                        if(p.getId() == e.getOption())
-                        {
-                            if(p.isAlive()) {
-                                p.damage(damageCalculations(e, p));
-                                updateInformation();
-                                ui.appendMain(e.getName() + " attacked " + p.getName() + " for " + damageCalculations(e, p) + ".\n");
-                            }
-                            else {
-                                ui.appendMain(e.getName() + " attacked " + p.getName() + ", but " + p.getName() + " is already dead.\n");
-                            }
-                            waitForNullInput();
-                            e.setAttacked(true);
-                            break;
-                        }
+                    PartyMember p = world.getParty().getPartyMember(e.getOption() - 1);
+                    if(p.isAlive()) {
+                        p.damage(damageCalculations(e, p));
+                        updateInformation();
+                        ui.appendMain(e.getName() + " attacked " + p.getName() + " for " + damageCalculations(e, p) + ".\n");
+                    } else {
+                        ui.appendMain(e.getName() + " attacked " + p.getName() + ", but " + p.getName() + " is already dead.\n");
                     }
+                    waitForNullInput();
+                    e.setAttacked(true);
                 }
             }
             fight = checkEndTurn();
