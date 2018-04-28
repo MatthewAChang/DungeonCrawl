@@ -17,8 +17,8 @@ public abstract class Character {
         this.id = id;
         this.name = name;
 
-        int hp = 0;
-        int maxHp = 0;
+        this.hp = 0;
+        this.maxHp = 0;
 
         this.alive = true;
         this.attacked = false;
@@ -37,12 +37,12 @@ public abstract class Character {
         this.option = -1;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getHp()

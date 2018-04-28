@@ -29,17 +29,11 @@ public class Mage extends PartyMember {
     public void autoLevel()
     {
         if(getLevel() % 4 == 0)
-        {
             increaseAttributes(0, 0, 2, 1);
-        }
         else if(getLevel() % 10 == 0)
-        {
             increaseAttributes(0, 1, 1, 1);
-        }
         else
-        {
             increaseAttributes(0, 0, 3, 0);
-        }
         levelUp();
     }
 }

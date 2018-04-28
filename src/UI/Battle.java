@@ -1,8 +1,10 @@
 package UI;
 
+import World.Character.Class;
 import World.Character.Enemy;
 import World.Character.PartyMember;
 import World.Item.Equipment;
+import World.Item.Spell;
 import World.World.Dungeon;
 
 import java.util.List;
@@ -47,7 +49,7 @@ public class Battle extends Game {
                             if (option > 0 && option < 5) {
                                 switch (option) {
                                     case 1:
-                                        int attack = attack();
+                                        int attack = targetEnemy();
                                         if(attack == -1) {
                                             break cont;
                                         } else {
@@ -55,12 +57,19 @@ public class Battle extends Game {
                                             break;
                                         }
                                     case 2:
-                                        break cont;
+                                        int spell = spell(p);
+                                        if(spell == -1) {
+                                            break cont;
+                                        } else {
+                                            option = (option * 100) + spell;
+                                            break;
+                                        }
                                     case 3:
                                         break cont;
                                     case 4:
                                         if (!run())
                                             break battle;
+                                        p.setAttacked(true);
                                 }
                                 p.setOption(option);
                                 break selection;
@@ -87,7 +96,7 @@ public class Battle extends Game {
             battleCalculations();
             fighting = checkEndBattle();
         }
-        spoilsOfBattle();
+        endBattle();
     }
 
     private boolean checkEndBattle()
@@ -95,7 +104,7 @@ public class Battle extends Game {
         return !(dungeon.allDead() || world.getParty().allDead());
     }
 
-    private void spoilsOfBattle()
+    private void endBattle()
     {
         ui.clearMainText();
         if(dungeon.allDead())
@@ -126,23 +135,21 @@ public class Battle extends Game {
         }
     }
 
-    private int attack()
+    private int targetEnemy()
     {
         ui.clearThenAppendMain("Who to attack:\n");
-        int back = 1;
+        int i = 1;
         for(Enemy e : dungeon)
         {
-            ui.appendMain(e.getId() +  ". " + e.getName() + "  ");
-            if(e.getId() % 3 == 0)
+            ui.appendMain(i +  ". " + e.getName() + "  ");
+            if(i++ % 3 == 0)
                 ui.appendMain("\n");
-            back = e.getId() + 1;
         }
-        ui.appendMain(back + ". Back");
-        ui.appendMain("\n");
+        ui.appendMain(i + ". Back\n");
         while(true)
         {
             int option = checkValidInput();
-            if(option == back)
+            if(option == i)
                 return -1;
             for(Enemy e : dungeon) {
                 if (e.getId() == option && e.isAlive()) {
@@ -152,10 +159,68 @@ public class Battle extends Game {
         }
     }
 
+    private int targetAlly() {
+        ui.clearThenAppendMain("Who to help:\n");
+        int i = 1;
+        for(PartyMember p : world.getParty())
+        {
+            ui.appendMain(i +  ". " + p.getName() + "  ");
+            if(i++ % 3 == 0)
+                ui.appendMain("\n");
+        }
+        ui.appendMain(i + ". Back\n");
+        while(true)
+        {
+            int option = checkValidInput();
+            if(option == i)
+                return -1;
+            for(PartyMember p : world.getParty()) {
+                if (p.getId() == option && p.isAlive()) {
+                    return option;
+                }
+            }
+        }
+    }
+
+    private int spell(PartyMember p) {
+        while(true) {
+            ui.clearThenAppendMain("What spell to use:\n");
+            int i = 1;
+            for (Spell s : p) {
+                ui.appendMain(i++ + ". " + s.getName() + "\n");
+            }
+            ui.appendMain(i + ". Back\n");
+            while (true) {
+                int option = checkValidInput();
+                if (option == i)
+                    return -1;
+                else if (option > 0 && option < i) {
+                    Spell spell = p.getSpells().get(option - 1);
+                    // Single target enemy
+                    if (!spell.isTargetSelf() && !spell.isTargetAlly() && spell.isTargetEnemy() && !spell.isAoe()) {
+                        int target = targetEnemy();
+                        if(target == -1)
+                            break;
+                        return (spell.getId() * 10) + target;
+                    // Single target ally
+                    } else if (spell.isTargetSelf() && spell.isTargetAlly() && !spell.isTargetEnemy() && !spell.isAoe()) {
+                        int target = targetAlly();
+                        if(target == -1)
+                            break;
+                        return (spell.getId() * 10) + targetAlly();
+                    // AOE
+                    } else {
+                        return spell.getId();
+                    }
+                }
+            }
+        }
+    }
+
     private boolean run()
     {
         Random rand = new Random();
-        if(rand.nextInt(100) + 1 > 5) {
+        if(rand.nextInt(100) + 1 > 99) {
             ui.clearMainText();
             ui.appendMain("You ran from battle!\n");
             waitForNullInput();
@@ -235,6 +300,8 @@ public class Battle extends Game {
 
     private int damageCalculations(PartyMember member, Enemy enemy)
     {
+        if(member.getRole() == Class.MAGE.role())
+            return member.getDamage();
         double damage = 1 - (enemy.getArmour() / 100.0);
         return (int)(member.getDamage() * damage);
     }

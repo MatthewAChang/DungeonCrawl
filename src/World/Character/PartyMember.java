@@ -1,22 +1,17 @@
 package World.Character;
 
+import Helper.Creation;
 import World.Item.Armour;
 import World.Item.Equipment;
 import World.Item.Spell;
 import World.Item.Weapon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class PartyMember extends Character{
-    private Armour head;
-    private Armour body;
-    private Weapon rightArm;
-    private Equipment leftArm;
-
-    private List<Spell> spells;
-
+public abstract class PartyMember extends Character implements Iterable<Spell> {
     private int role;
     private int level;
     private int exp;
@@ -29,6 +24,13 @@ public abstract class PartyMember extends Character{
     private int dexterity;
     private int willpower;
     private int constitution;
+
+    private List<Spell> spells;
+
+    private Armour head;
+    private Armour body;
+    private Weapon rightArm;
+    private Equipment leftArm;
 
     private final int CONVERSION = 5;
 
@@ -164,6 +166,10 @@ public abstract class PartyMember extends Character{
         return constitution;
     }
 
+    public List<Spell> getSpells() {
+        return spells;
+    }
+
     public Armour getHead() {
         return head;
     }
@@ -193,6 +199,8 @@ public abstract class PartyMember extends Character{
     }
 
     public void increaseLevel() {
+        if(level % 3 == 0)
+            Creation.addSpell(this);
         level += 1;
     }
 
@@ -224,6 +232,10 @@ public abstract class PartyMember extends Character{
                 constitution += 1;
                 break;
         }
+    }
+
+    public void addSpell(Spell spell) {
+        spells.add(spell);
     }
 
     public Equipment equipHead(Armour head)
@@ -342,6 +354,11 @@ public abstract class PartyMember extends Character{
     public abstract void levelUp();
 
     public abstract void autoLevel();
+
+    @Override
+    public Iterator<Spell> iterator() {
+        return spells.iterator();
+    }
 
     @Override
     public boolean equals(Object o) {

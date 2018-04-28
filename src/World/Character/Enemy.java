@@ -5,7 +5,6 @@ import World.Item.Equipment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 public class Enemy extends Character {
 
@@ -41,6 +40,10 @@ public class Enemy extends Character {
         return armour;
     }
 
+    public boolean isBoss() {
+        return boss;
+    }
+
     public int getGoldDrop() {
         return goldDrop;
     }
@@ -49,24 +52,8 @@ public class Enemy extends Character {
         return expDrop;
     }
 
-    public Equipment getRandomDrop()
-    {
-        if(drops.isEmpty())
-            return null;
-        Random rand = new Random();
-        int num;
-        if(isBoss())
-            num = rand.nextInt(drops.size());
-        else
-            num = rand.nextInt(drops.size() * 2);
-        if(num < (drops.size() - 1))
-            return drops.get(num);
-        else
-            return null;
-    }
-
-    private boolean isBoss() {
-        return boss;
+    public List<Equipment> getDrops() {
+        return drops;
     }
 
     @Override

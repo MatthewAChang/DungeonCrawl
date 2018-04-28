@@ -6,6 +6,7 @@ import World.Item.Equipment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Dungeon extends Location implements Iterable<Enemy> {
 
@@ -57,9 +58,18 @@ public class Dungeon extends Location implements Iterable<Enemy> {
         List<Equipment> drops = new ArrayList<>();
         for(Enemy e: this)
         {
-            Equipment equipment = e.getRandomDrop();
-            if(equipment != null)
-                drops.add(equipment);
+            List<Equipment> potentialDrops = e.getDrops();
+            if(potentialDrops.isEmpty())
+                return null;
+            Random rand = new Random();
+            int num;
+            if(e.isBoss())
+                drops.add(potentialDrops.get(rand.nextInt(potentialDrops.size())));
+            else {
+                num = rand.nextInt(potentialDrops.size() * 2);
+                if (num < (potentialDrops.size() - 1))
+                    drops.add(potentialDrops.get(num));
+            }
         }
         return drops;
     }

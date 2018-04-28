@@ -2,10 +2,7 @@ package Helper;
 
 import World.Character.Class;
 import World.Character.*;
-import World.Item.Armour;
-import World.Item.Equipment;
-import World.Item.Restriction;
-import World.Item.Weapon;
+import World.Item.*;
 import World.World.Dungeon;
 import World.World.Town;
 
@@ -38,12 +35,12 @@ public class Creation {
     }
 
     public static List<PartyMember> createNewParty(PartyMember player) {
-        List<PartyMember> members = addPartyMembers(player);
-        addEquipment(members);
+        List<PartyMember> members = addBasePartyMembers(player);
+        addBaseEquipment(members);
         return members;
     }
 
-    private static List<PartyMember> addPartyMembers(PartyMember player) {
+    private static List<PartyMember> addBasePartyMembers(PartyMember player) {
         List<PartyMember> members = new ArrayList<>();
         members.add(player);
         if(player.getRole() == Class.WARRIOR.role())
@@ -51,7 +48,7 @@ public class Creation {
             members.add(createNewRogue("Leliana"));
             members.add(createNewMage("Vanille"));
         }
-        else if(player.getRole() == Class.ROUGE.role())
+        else if(player.getRole() == Class.ROGUE.role())
         {
             members.add(createNewWarrior("Marth"));
             members.add(createNewMage("Luxanna"));
@@ -64,7 +61,7 @@ public class Creation {
         return members;
     }
 
-    private static void addEquipment(List<PartyMember> members) {
+    private static void addBaseEquipment(List<PartyMember> members) {
         for(PartyMember p : members)
         {
             if(p.getRole() == Class.WARRIOR.role())
@@ -73,17 +70,60 @@ public class Creation {
                 p.equipRightArm(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),1, 0, 0, 0, 50));
                 p.equipLeftArm(new Armour("Bronze Shield", Class.WARRIOR.role(), Restriction.LEFT_ARM.equip(),0, 0, 0, 1, 2));
             }
-            else if(p.getRole() == Class.ROUGE.role())
+            else if(p.getRole() == Class.ROGUE.role())
             {
-                p.equipBody(new Armour("Worn Cloak", Class.ROUGE.role(), Restriction.BODY.equip(),1, 0, 0, 1, 5));
-                p.equipRightArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
-                p.equipLeftArm(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
+                p.equipBody(new Armour("Worn Cloak", Class.ROGUE.role(), Restriction.BODY.equip(),1, 0, 0, 1, 5));
+                p.equipRightArm(new Weapon("Bronze Dagger", Class.ROGUE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
+                p.equipLeftArm(new Weapon("Bronze Dagger", Class.ROGUE.role(), Restriction.ARM.equip(),0, 1, 0, 0, 30));
             }
             else if(p.getRole() == Class.MAGE.role())
             {
                 p.equipBody(new Armour("Old Tunic", Class.MAGE.role(), Restriction.BODY.equip(),0, 0, 1, 1, 5));
                 p.equipRightArm(new Weapon("Old Staff", Class.MAGE.role(), Restriction.RIGHT_ARM.equip(),0, 0, 2, 0, 60));
             }
+        }
+    }
+
+    public static void addSpell(PartyMember p) {
+        if(p.getRole() == Class.WARRIOR.role())
+            warriorSpell((Warrior)p);
+        else if(p.getRole() == Class.ROGUE.role())
+            rogueSpell((Rogue)p);
+        else if(p.getRole() == Class.MAGE.role())
+            mageSpell((Mage)p);
+
+    }
+
+    private static void warriorSpell(Warrior warrior) {
+        switch (warrior.getLevel()) {
+            case 0:
+                warrior.addSpell(new Spell(1,"Shield Bash", (int)(warrior.getDamage() * 1.5), 30, false,false, true, false));
+                break;
+            case 3:
+                warrior.addSpell(new Spell(2,"Hunker Down", warrior.getArmour() * 2, 40, true,false, false, false));
+                break;
+        }
+    }
+
+    private static void rogueSpell(Rogue rogue) {
+        switch (rogue.getLevel()) {
+            case 0:
+                rogue.addSpell(new Spell(4,"Cheap Shot", (rogue.getDamage() * 2), 50, false,false, true, false));
+                break;
+            case 3:
+                rogue.addSpell(new Spell(5,"Throwing Knives", (2 * rogue.getDamage()) / 3, 40,false, false, true, true));
+                break;
+        }
+    }
+
+    private static void mageSpell(Mage mage) {
+        switch (mage.getLevel()) {
+            case 0:
+                mage.addSpell(new Spell(7,"Heal", mage.getDamage() / 2, 50, true,true, false, false));
+                break;
+            case 3:
+                mage.addSpell(new Spell(8,"Fireball", mage.getDamage() / 2, 40,false, false, true, true));
+                break;
         }
     }
 
@@ -100,7 +140,7 @@ public class Creation {
         Random rand = new Random();
         List<Enemy> enemies = new ArrayList<>();
 
-        List<Equipment> drops = getDrops(rand, nextDungeonId);
+        List<Equipment> drops = createDrops(rand, nextDungeonId);
 
         int enemyId = 1;
         int gold;
@@ -161,24 +201,24 @@ public class Creation {
         return new Dungeon(nextDungeonId++, name, enemies);
     }
 
-    private static List<Equipment> getDrops(Random rand, int id)
+    private static List<Equipment> createDrops(Random rand, int id)
     {
         List<Equipment> drops = new ArrayList<>();
         switch(id) {
             case 1:
-                drops.add(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
+                drops.add(new Weapon("Bronze Dagger", Class.ROGUE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
                 drops.add(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),rand.nextInt(3) + 1, 0, 0, 0, rand.nextInt(6) + 50));
                 drops.add(new Armour("Worn Cowl", Class.MAGE.role(), Restriction.HEAD.equip(),0, 0, rand.nextInt(4) + 1, rand.nextInt(3), rand.nextInt(4) + 20));
                 drops.add(new Armour("Bronze Helmet", Class.WARRIOR.role(), Restriction.HEAD.equip(),rand.nextInt(2), 0, 0, rand.nextInt(3), rand.nextInt(4) + 30));
                 break;
             case 2:
-                drops.add(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
+                drops.add(new Weapon("Bronze Dagger", Class.ROGUE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
                 drops.add(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),rand.nextInt(3) + 1, 0, 0, 0, rand.nextInt(6) + 50));
                 drops.add(new Armour("Worn Cowl", Class.MAGE.role(), Restriction.HEAD.equip(),0, 0, rand.nextInt(4) + 1, rand.nextInt(3), rand.nextInt(4) + 20));
                 drops.add(new Armour("Bronze Helmet", Class.WARRIOR.role(), Restriction.HEAD.equip(),rand.nextInt(2), 0, 0, rand.nextInt(3), rand.nextInt(4) + 30));
                 break;
             case 3:
-                drops.add(new Weapon("Bronze Dagger", Class.ROUGE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
+                drops.add(new Weapon("Bronze Dagger", Class.ROGUE.role(), Restriction.ARM.equip(),rand.nextInt(2), rand.nextInt(3) + 1, 0, 0, rand.nextInt(6) + 40));
                 drops.add(new Weapon("Bronze Sword", Class.WARRIOR.role(), Restriction.RIGHT_ARM.equip(),rand.nextInt(3) + 1, 0, 0, 0, rand.nextInt(6) + 50));
                 drops.add(new Armour("Worn Cowl", Class.MAGE.role(), Restriction.HEAD.equip(),0, 0, rand.nextInt(4) + 1, rand.nextInt(3), rand.nextInt(4) + 20));
                 drops.add(new Armour("Bronze Helmet", Class.WARRIOR.role(), Restriction.HEAD.equip(),rand.nextInt(2), 0, 0, rand.nextInt(3), rand.nextInt(4) + 30));

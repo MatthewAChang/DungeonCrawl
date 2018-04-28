@@ -9,7 +9,7 @@ public class Rogue extends PartyMember {
 
     public Rogue(String name, int baseHp, int baseMana, int str, int dex, int wil, int con)
     {
-        super(name, Class.ROUGE.role(), baseHp, baseMana, str, dex, wil, con);
+        super(name, Class.ROGUE.role(), baseHp, baseMana, str, dex, wil, con);
         setStats();
     }
 
@@ -35,17 +35,11 @@ public class Rogue extends PartyMember {
     public void autoLevel()
     {
         if(getLevel() % 3 == 0)
-        {
             increaseAttributes(0, 2, 0, 1);
-        }
         else if(getLevel() % 10 == 0)
-        {
             increaseAttributes(1, 0, 1, 1);
-        }
         else
-        {
             increaseAttributes(0, 3, 0, 0);
-        }
         levelUp();
     }
 }

@@ -3,7 +3,7 @@ package World.Character;
 public enum Class {
 
     WARRIOR(1),
-    ROUGE(2),
+    ROGUE(2),
     MAGE(3);
 
     private int role;

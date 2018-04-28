@@ -28,17 +28,11 @@ public class Warrior extends PartyMember {
     public void autoLevel()
     {
         if(getLevel() % 2 == 0)
-        {
             increaseAttributes(2, 0, 0, 1);
-        }
         else if(getLevel() % 10 == 0)
-        {
             increaseAttributes(0, 1, 1, 1);
-        }
         else
-        {
             increaseAttributes(3, 0, 0, 0);
-        }
         levelUp();
     }
 }
