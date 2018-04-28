@@ -2,10 +2,10 @@ package UI;
 
 import Helper.Help;
 import Helper.Story;
-import Party.Members.PartyMember;
-import World.Dungeon;
-import World.Enemy;
-import World.World;
+import World.Character.Enemy;
+import World.Character.PartyMember;
+import World.World.Dungeon;
+import World.World.World;
 
 public class Game {
     protected static UIFrame ui;
@@ -35,10 +35,8 @@ public class Game {
     {
         for(PartyMember p : world.getParty())
         {
-            String basic = String.format("L.%-3s%-10sEXP:%s", p.getLevel(), p.getName(), p.getExpForNextLvlRelative());
-            ui.appendParty(basic + "\n");
-            String battle = String.format("HP:%4s/%-4s  MP:%4s/%-4s", p.getHP(), p.getMaxHP(), p.getMana(), p.getMaxMana());
-            ui.appendParty(battle + "\n");
+            ui.appendParty(String.format("L.%-3s%-11sEXP:%s\n", p.getLevel(), p.getName(), p.getExpForNextLvlRelative()));
+            ui.appendParty(String.format("HP:%4s/%-4s  MP:%4s/%-4s\n", p.getHp(), p.getMaxHp(), p.getMana(), p.getMaxMana()));
         }
         ui.appendParty("Gold: " + world.getParty().getGold());
     }
@@ -48,10 +46,7 @@ public class Game {
         Dungeon dungeon = world.getCurrentTown().getCurrentDungeon();
         for(Enemy e : dungeon)
         {
-            String info = e.getName() + "\t";
-            info += e.getHP();
-            info += "/" + e.getMaxHP();
-            ui.appendOther(info + "\n");
+            ui.appendOther(String.format("%14s%5s/%s\n", e.getName(), e.getHp(), e.getMaxHp()));
         }
     }
 

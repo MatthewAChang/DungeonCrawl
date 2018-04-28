@@ -1,13 +1,13 @@
 package UI;
 
-import Party.Item.Armour;
-import Party.Item.Equipment;
-import Party.Item.Restriction;
-import Party.Item.Weapon;
-import Party.Members.Class;
-import Party.Members.PartyMember;
-import World.Dungeon;
-import World.Town;
+import World.Character.PartyMember;
+import World.Character.Class;
+import World.Item.Armour;
+import World.Item.Equipment;
+import World.Item.Restriction;
+import World.Item.Weapon;
+import World.World.Dungeon;
+import World.World.Town;
 
 public class MainMenu extends Game {
 
@@ -25,16 +25,15 @@ public class MainMenu extends Game {
             ui.appendMain("Main Menu:\n");
             ui.appendMain("1) Dungeon\n");
             ui.appendMain("2) Shop\n");
-            ui.appendMain("3) Talk\n");
-            ui.appendMain("4) Inn\n");
-            ui.appendMain("5) Inventory\n");
-            ui.appendMain("6) Travel\n");
-            ui.appendMain("7) Stats\n");
-            ui.appendMain("8) Help\n");
+            ui.appendMain("3) Inn\n");
+            ui.appendMain("4) Inventory\n");
+            ui.appendMain("5) Travel\n");
+            ui.appendMain("6) Stats\n");
+            ui.appendMain("7) Help\n");
             while(true)
             {
                 int option = checkValidInput();
-                if(option > 0 && option < 9)
+                if(option > 0 && option < 8)
                 {
                     ui.clearMainText();
                     switch (option)
@@ -46,21 +45,18 @@ public class MainMenu extends Game {
                             ToBeCreated();
                             break;
                         case 3:
-                            ToBeCreated();
-                            break;
-                        case 4:
                             inn();
                             break;
-                        case 5:
+                        case 4:
                             inventory();
                             break;
-                        case 6:
+                        case 5:
                             travel();
                             break;
-                        case 7:
+                        case 6:
                             stats();
                             break;
-                        case 8:
+                        case 7:
                             printHelp(3);
                     }
                     break;
@@ -239,7 +235,7 @@ public class MainMenu extends Game {
                 if (option > 0 && option <= world.getParty().getPartySize()) {
                     PartyMember member = world.getParty().getPartyMember(option - 1);
                     ui.clearMainText();
-                    ui.appendMain(String.format(" %s:  %s\n", member.getName(), Class.toString(member.getRole())));
+                    ui.appendMain(String.format(" %s: %-9sTotal EXP: %s\n", member.getName(), Class.toString(member.getRole()), member.getCurrentExp()));
                     ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
                     ui.appendMain(String.format("%20s%4s%4s%4s%5s", "Base:", member.getBaseStrength(), member.getBaseDexterity(), member.getBaseWillpower(), member.getBaseConstitution() + "\n"));
                     if (member.getHead() != null) {

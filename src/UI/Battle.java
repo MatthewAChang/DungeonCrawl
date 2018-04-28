@@ -1,11 +1,9 @@
 package UI;
 
-import Party.Item.Equipment;
-import Party.Members.Class;
-import Party.Members.PartyMember;
-import Party.Members.Warrior;
-import World.Dungeon;
-import World.Enemy;
+import World.Character.Enemy;
+import World.Character.PartyMember;
+import World.Item.Equipment;
+import World.World.Dungeon;
 
 import java.util.List;
 import java.util.Random;
@@ -81,10 +79,10 @@ public class Battle extends Game {
                 while (true) {
                     option = rand.nextInt(world.getParty().getPartyMembers().size()) + 1;
                     for(PartyMember p : world.getParty())
-                        if(option == p.getID() && p.isAlive())
+                        if(option == p.getId() && p.isAlive())
                             break check;
                 }
-                e.setTarget(option);
+                e.setOption(option);
             }
             battleCalculations();
             fighting = checkEndBattle();
@@ -134,10 +132,10 @@ public class Battle extends Game {
         int back = 1;
         for(Enemy e : dungeon)
         {
-            ui.appendMain(e.getID() +  ". " + e.getName() + "  ");
-            if(e.getID() % 3 == 0)
+            ui.appendMain(e.getId() +  ". " + e.getName() + "  ");
+            if(e.getId() % 3 == 0)
                 ui.appendMain("\n");
-            back = e.getID() + 1;
+            back = e.getId() + 1;
         }
         ui.appendMain(back + ". Back");
         ui.appendMain("\n");
@@ -147,7 +145,7 @@ public class Battle extends Game {
             if(option == back)
                 return -1;
             for(Enemy e : dungeon) {
-                if (e.getID() == option && e.isAlive()) {
+                if (e.getId() == option && e.isAlive()) {
                     return option;
                 }
             }
@@ -186,7 +184,7 @@ public class Battle extends Game {
                         case 1:
                             for(Enemy e : dungeon)
                             {
-                                if(e.getID() == option % 100)
+                                if(e.getId() == option % 100)
                                 {
                                     if(e.isAlive()) {
                                         e.damage(damageCalculations(p, e));
@@ -213,7 +211,7 @@ public class Battle extends Game {
                 {
                     for(PartyMember p : world.getParty())
                     {
-                        if(p.getID() == e.getTarget())
+                        if(p.getId() == e.getOption())
                         {
                             if(p.isAlive()) {
                                 p.damage(damageCalculations(e, p));
@@ -243,13 +241,7 @@ public class Battle extends Game {
 
     private int damageCalculations(Enemy enemy, PartyMember member)
     {
-        int reduction = member.getArmour();
-        if(member.getRole() == Class.WARRIOR.role()) {
-            Warrior t = (Warrior) member;
-            reduction = t.getWarriorArmour();
-        }
-        double damage = 1 - (reduction / 100.0);
-
+        double damage = 1 - (member.getArmour() / 100.0);
         return (int)(enemy.getDamage() * damage);
     }
 

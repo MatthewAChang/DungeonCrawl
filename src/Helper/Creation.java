@@ -1,14 +1,13 @@
 package Helper;
 
-import Party.Item.Armour;
-import Party.Item.Equipment;
-import Party.Item.Restriction;
-import Party.Item.Weapon;
-import Party.Members.*;
-import Party.Members.Class;
-import World.Dungeon;
-import World.Enemy;
-import World.Town;
+import World.Character.Class;
+import World.Character.*;
+import World.Item.Armour;
+import World.Item.Equipment;
+import World.Item.Restriction;
+import World.Item.Weapon;
+import World.World.Dungeon;
+import World.World.Town;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,18 @@ public class Creation {
 
     };
 
+    public static Warrior createNewWarrior(String name) {
+        return new Warrior(name, 100, 100, 14, 13, 10, 13);
+    }
+
+    public static Rogue createNewRogue(String name) {
+        return new Rogue(name, 90, 90, 10, 14, 12, 10);
+    }
+
+    public static Mage createNewMage(String name) {
+        return new Mage(name, 85, 115, 10, 10, 14, 11);
+    }
+
     public static List<PartyMember> createNewParty(PartyMember player) {
         List<PartyMember> members = addPartyMembers(player);
         addEquipment(members);
@@ -37,18 +48,18 @@ public class Creation {
         members.add(player);
         if(player.getRole() == Class.WARRIOR.role())
         {
-            members.add(new Rogue("Leliana"));
-            members.add(new Mage("Vanille"));
+            members.add(createNewRogue("Leliana"));
+            members.add(createNewMage("Vanille"));
         }
         else if(player.getRole() == Class.ROUGE.role())
         {
-            members.add(new Warrior("Marth"));
-            members.add(new Mage("Luxanna"));
+            members.add(createNewWarrior("Marth"));
+            members.add(createNewMage("Luxanna"));
         }
         else if(player.getRole() == Class.MAGE.role())
         {
-            members.add(new Warrior("Ogma"));
-            members.add(new Rogue("Rose"));
+            members.add(createNewWarrior("Ogma"));
+            members.add(createNewRogue("Rose"));
         }
         return members;
     }

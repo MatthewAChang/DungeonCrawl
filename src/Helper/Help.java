@@ -47,7 +47,6 @@ public class Help {
         String str;
         str =  "Dungeon   - Go and explore nearby dungeons\n";
         str += "Shop      - visit the local shop to buy and sell items\n";
-        str += "Talk      - talk to townsfolk\n";
         str += "Inn       - restore health and stamina/mana and save your game\n";
         str += "Inventory - view your inventory and equip and unequip items\n";
         str += "Travel    - travel to another town\n";

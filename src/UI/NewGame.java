@@ -1,8 +1,8 @@
 package UI;
 
 import Helper.Creation;
-import Party.Members.Class;
-import Party.Members.*;
+import World.Character.PartyMember;
+import World.Character.Class;
 
 public class NewGame extends Game{
 
@@ -21,13 +21,13 @@ public class NewGame extends Game{
 
         while(true)
         {
-            ui.clearThenAppendMain("What is your name?\n");
+            ui.clearThenAppendMain("What is your name(Max. 10 characters)?\n");
 
             while (true)
             {
                 waitForInput();
                 name = ui.getTextInput();
-                if (!name.isEmpty() && name.chars().allMatch(Character::isLetter))
+                if (!name.isEmpty() && name.length() <= 10 && name.chars().allMatch(Character::isLetter))
                     break;
                 else
                     ui.appendMain("Invalid name.\n");
@@ -39,7 +39,7 @@ public class NewGame extends Game{
                 ui.appendMain("4) Help\n");
                 while (true) {
                     int option = checkValidInput();
-                    if (option > 0 && option < 3) {
+                    if (option > 0 && option < 4) {
                         role = option;
                         break role;
                     } else if (option == 4) {
@@ -54,9 +54,9 @@ public class NewGame extends Game{
         }
         switch (role)
         {
-            case 1: return new Warrior(name);
-            case 2: return new Rogue(name);
-            case 3: return new Mage(name);
+            case 1: return Creation.createNewWarrior(name);
+            case 2: return Creation.createNewRogue(name);
+            case 3: return Creation.createNewMage(name);
             default: return null;
         }
     }
