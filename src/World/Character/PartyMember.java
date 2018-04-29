@@ -1,5 +1,6 @@
 package World.Character;
 
+import Helper.Enum.ClassList;
 import Helper.Creation;
 import World.Item.Armour;
 import World.Item.Equipment;
@@ -166,8 +167,8 @@ public abstract class PartyMember extends Character implements Iterable<Spell> {
         return constitution;
     }
 
-    public List<Spell> getSpells() {
-        return spells;
+    public Spell getSpell(int index) {
+        return spells.get(index);
     }
 
     public Armour getHead() {
@@ -295,9 +296,15 @@ public abstract class PartyMember extends Character implements Iterable<Spell> {
         mana = maxMana;
     }
 
-    @Override
-    public int getDamage()
-    {
+    public boolean minusMana(int amount) {
+        if(amount <= mana) {
+            mana -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    public int getBaseDamage() {
         int damage = 0;
         if(rightArm != null)
             damage += rightArm.getDamage();
@@ -313,7 +320,7 @@ public abstract class PartyMember extends Character implements Iterable<Spell> {
             armour += head.getArmour();
         if(body != null)
             armour += body.getArmour();
-        if(getRole() == Class.WARRIOR.role() && leftArm != null) {
+        if(getRole() == ClassList.WARRIOR.role() && leftArm != null) {
             Armour shield = (Armour)leftArm;
             armour += shield.getArmour();
         }

@@ -5,7 +5,7 @@ public class Armour extends Equipment{
 
     public Armour(String name, int role, int equip, int strength, int dexterity, int willpower, int constitution, int armour)
     {
-        super(name, role, equip, strength, dexterity, willpower, constitution);
+        super(name, role, equip, strength, dexterity, willpower, constitution, armour * 3);
         this.armour = armour;
     }
 

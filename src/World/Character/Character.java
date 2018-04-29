@@ -67,6 +67,13 @@ public abstract class Character {
         return option;
     }
 
+    public void heal(int heal) {
+        if(heal + hp > maxHp)
+            hp = maxHp;
+        else
+            hp += heal;
+    }
+
     public void setHp(int hp) {
         this.maxHp = hp;
         this.hp = this.maxHp;

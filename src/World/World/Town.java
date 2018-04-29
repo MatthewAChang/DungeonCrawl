@@ -1,6 +1,7 @@
 package World.World;
 
 import Helper.Creation;
+import World.Item.Equipment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +12,7 @@ public class Town extends Location implements Iterable<Dungeon>{
     private List<Dungeon> dungeons;
     private Dungeon currentDungeon;
 
-
+    private List<Equipment> shop;
 
     public Town(int id, String[] names)
     {
@@ -19,6 +20,7 @@ public class Town extends Location implements Iterable<Dungeon>{
         dungeons = new ArrayList<>();
         addDungeons(names);
         currentDungeon = null;
+        shop = Creation.addInventory(id);
     }
 
     private void addDungeons(String[] names) {
@@ -33,6 +35,14 @@ public class Town extends Location implements Iterable<Dungeon>{
 
     public Dungeon getCurrentDungeon() {
         return currentDungeon;
+    }
+
+    public List<Equipment> getShop() {
+        return shop;
+    }
+
+    public Equipment getEquipment(int index) {
+        return shop.get(index);
     }
 
     public void setCurrentDungeon(Dungeon dungeon) {

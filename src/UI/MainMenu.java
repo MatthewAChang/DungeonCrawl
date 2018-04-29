@@ -1,10 +1,10 @@
 package UI;
 
 import World.Character.PartyMember;
-import World.Character.Class;
+import Helper.Enum.ClassList;
 import World.Item.Armour;
 import World.Item.Equipment;
-import World.Item.Restriction;
+import Helper.Enum.Restriction;
 import World.Item.Weapon;
 import World.World.Dungeon;
 import World.World.Town;
@@ -42,7 +42,7 @@ public class MainMenu extends Game {
                             battle();
                             break;
                         case 2:
-                            ToBeCreated();
+                            shop();
                             break;
                         case 3:
                             inn();
@@ -58,17 +58,12 @@ public class MainMenu extends Game {
                             break;
                         case 7:
                             printHelp(3);
+                            break;
                     }
                     break;
                 }
             }
         }
-    }
-
-    private void ToBeCreated()
-    {
-        ui.clearThenAppendMain("Not implemented yet. Please wait.\n");
-        waitForNullInput();
     }
 
     private void battle() {
@@ -86,6 +81,86 @@ public class MainMenu extends Game {
                 break;
             } else if(option == i) {
                 break;
+            }
+        }
+    }
+
+    private void shop() {
+        shop:
+        while(true) {
+            ui.clearThenAppendMain("Shop Keeper:\n");
+            ui.appendMain("Would you like to buy or sell?\n");
+            ui.appendMain("1) Buy  2) Sell 3) Back\n");
+            while (true) {
+                int option = checkValidInput();
+                if (option == 1) {
+                    buy();
+                    break;
+                } else if (option == 2) {
+                    sell();
+                    break;
+                } else if (option == 3) {
+                    break shop;
+                }
+            }
+        }
+    }
+
+    private void buy() {
+        buy:
+        while(true) {
+            ui.clearThenAppendMain("What would you like to buy:\n");
+            int i = 1;
+            ui.appendMain(String.format("%28s%4s%4s%4s%4s%4s%4s\n", "Str", "Dex", "Wil", "Con", "Dmg", "Arm", "Cst"));
+            for (Equipment e : world.getCurrentTown().getShop()) {
+                ui.appendMain(String.format("%2s) %20s%4s%4s%4s%4s", i++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
+                if (e.getEquip() == Restriction.BODY.equip() || e.getEquip() == Restriction.HEAD.equip()) {
+                    Armour a = (Armour) e;
+                    ui.appendMain(String.format("%8s", a.getArmour()));
+                } else {
+                    Weapon w = (Weapon) e;
+                    ui.appendMain(String.format("%4s%4s", w.getDamage(), ""));
+                }
+                ui.appendMain(String.format("%4s\n", e.getBuyValue()));
+            }
+            ui.appendMain(String.format("%2s) %20s\n", i, "Back"));
+            while (true) {
+                int option = checkValidInput();
+                if (option > 0 && option < i) {
+                    if(world.getParty().minusGold(world.getCurrentTown().getEquipment(option - 1).getBuyValue())) {
+                        world.getParty().addEquipment(world.getCurrentTown().getEquipment(option - 1));
+                        ui.clearThenAppendMain("You bought a " + world.getCurrentTown().getEquipment(option - 1).getName() + ".\n");
+
+                    } else {
+                        ui.clearThenAppendMain("You cannot afford this item.\n");
+                    }
+                    waitForNullInput();
+                    updateInformation();
+                    break;
+                } else if (option == i) {
+                    break buy;
+                }
+            }
+        }
+    }
+
+    private void sell() {
+        sell:
+        while(true) {
+            ui.clearThenAppendMain("What would you like to sell:\n");
+            int i = printInventory();
+            while (true) {
+                int option = checkValidInput();
+                if (option > 0 && option < i) {
+                    world.getParty().addGold(world.getParty().getEquipment(option - 1).getSellValue());
+                    ui.clearThenAppendMain("You sold a " + world.getParty().getEquipment(option - 1).getName() + ".\n");
+                    world.getParty().removeEquipment(option - 1);
+                    waitForNullInput();
+                    updateInformation();
+                    break;
+                } else if (option == i) {
+                    break sell;
+                }
             }
         }
     }
@@ -109,9 +184,7 @@ public class MainMenu extends Game {
                 ui.appendMain(".................\n");
                 waitForNullInput();
                 break;
-            }
-            else if(option == 2)
-            {
+            } else if(option == 2) {
                 break;
             }
         }
@@ -122,16 +195,9 @@ public class MainMenu extends Game {
     private void inventory()
     {
         inventory:
-        while(true)
-        {
+        while(true) {
             ui.clearMainText();
-            int i = 1;
-            ui.appendMain(String.format("%24s%4s%4s%5s\n", "Str", "Dex", "Wil", "Con"));
-            for(Equipment e: world.getParty().getInventory())
-            {
-                ui.appendMain(String.format("%2s) %17s%4s%4s%4s%5s\n", i++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
-            }
-            ui.appendMain(String.format("%2s) Back\n", i));
+            int i = printInventory();
             while(true) {
                 int option = checkValidInput();
                 if(option > 0 && option < i) {
@@ -142,6 +208,25 @@ public class MainMenu extends Game {
                 }
             }
         }
+    }
+
+    private int printInventory() {
+        int i = 1;
+        ui.appendMain(String.format("%28s%4s%4s%4s%4s%4s%4s\n", "Str", "Dex", "Wil", "Con", "Dmg", "Arm", "Cst"));
+        for(Equipment e: world.getParty().getInventory())
+        {
+            ui.appendMain(String.format("%2s) %20s%4s%4s%4s%4s", i++, e.getName(), e.getStrength(), e.getDexterity(), e.getWillpower(), e.getConstitution()));
+            if(e.getEquip() == Restriction.BODY.equip() || e.getEquip() == Restriction.HEAD.equip()) {
+                Armour a = (Armour) e;
+                ui.appendMain(String.format("%8s", a.getArmour()));
+            } else {
+                Weapon w = (Weapon) e;
+                ui.appendMain(String.format("%4s%4s", w.getDamage(), ""));
+            }
+            ui.appendMain(String.format("%4s\n", e.getSellValue()));
+        }
+        ui.appendMain(String.format("%2s) %20s:\n", i, "Back"));
+        return i;
     }
 
     private void equip(int equipment)
@@ -161,8 +246,8 @@ public class MainMenu extends Game {
         PartyMember p = world.getParty().getPartyMember(member);
         Equipment e = world.getParty().getEquipment(equipment);
 
-        if(e.getRole() != p.getRole()) {
-            ui.appendMain("Can only equip to " + Class.toString(e.getRole()) + "\n");
+        if(e.getRole() != ClassList.ALL.role() && e.getRole() != p.getRole()) {
+            ui.appendMain("Can only equip to " + ClassList.toString(e.getRole()) + "\n");
             waitForNullInput();
             return;
         }
@@ -235,26 +320,33 @@ public class MainMenu extends Game {
                 if (option > 0 && option <= world.getParty().getPartySize()) {
                     PartyMember member = world.getParty().getPartyMember(option - 1);
                     ui.clearMainText();
-                    ui.appendMain(String.format(" %s: %-9sTotal EXP: %s\n", member.getName(), Class.toString(member.getRole()), member.getCurrentExp()));
-                    ui.appendMain(String.format("%24s%4s%4s%5s", "Str", "Dex", "Wil", "Con\n"));
-                    ui.appendMain(String.format("%20s%4s%4s%4s%5s", "Base:", member.getBaseStrength(), member.getBaseDexterity(), member.getBaseWillpower(), member.getBaseConstitution() + "\n"));
+                    ui.appendMain(String.format(" %s: %-9sTotal EXP: %s\n", member.getName(), ClassList.toString(member.getRole()), member.getCurrentExp()));
+                    ui.appendMain(String.format("%25s%4s%4s%4s%4s%4s\n", "Str", "Dex", "Wil", "Con", "Dmg", "Arm"));
+                    ui.appendMain(String.format("%20s%4s%4s%4s%4s\n", "Base", member.getBaseStrength(), member.getBaseDexterity(), member.getBaseWillpower(), member.getBaseConstitution()));
                     if (member.getHead() != null) {
                         Armour head = member.getHead();
-                        ui.appendMain(String.format("%20s%4s%4s%4s%5s", head.getName(), head.getStrength(), head.getDexterity(), head.getWillpower(), head.getConstitution() + "\n"));
+                        ui.appendMain(String.format("%20s%4s%4s%4s%4s%8s\n", head.getName(), head.getStrength(), head.getDexterity(), head.getWillpower(), head.getConstitution(), head.getArmour()));
                     }
                     if (member.getBody() != null) {
                         Armour body = member.getBody();
-                        ui.appendMain(String.format("%20s%4s%4s%4s%5s", body.getName() + ":", body.getStrength(), body.getDexterity(), body.getWillpower(), body.getConstitution() + "\n"));
+                        ui.appendMain(String.format("%20s%4s%4s%4s%4s%8s\n", body.getName(), body.getStrength(), body.getDexterity(), body.getWillpower(), body.getConstitution(), body.getArmour()));
                     }
                     if (member.getRightArm() != null) {
                         Weapon rightArm = member.getRightArm();
-                        ui.appendMain(String.format("%20s%4s%4s%4s%5s", rightArm.getName() + ":", rightArm.getStrength(), rightArm.getDexterity(), rightArm.getWillpower(), rightArm.getConstitution() + "\n"));
+                        ui.appendMain(String.format("%20s%4s%4s%4s%4s%4s\n", rightArm.getName(), rightArm.getStrength(), rightArm.getDexterity(), rightArm.getWillpower(), rightArm.getConstitution(), rightArm.getDamage()));
                     }
                     if (member.getLeftArm() != null) {
                         Equipment leftArm = member.getLeftArm();
-                        ui.appendMain(String.format("%20s%4s%4s%4s%5s", leftArm.getName() + ":", leftArm.getStrength(), leftArm.getDexterity(), leftArm.getWillpower(), leftArm.getConstitution() + "\n"));
+                        ui.appendMain(String.format("%20s%4s%4s%4s%4s", leftArm.getName(), leftArm.getStrength(), leftArm.getDexterity(), leftArm.getWillpower(), leftArm.getConstitution()));
+                        if(leftArm.getRole() == ClassList.WARRIOR.role()) {
+                            Armour a = (Armour)leftArm;
+                            ui.appendMain(String.format("%8s\n", a.getArmour()));
+                        } else if (leftArm.getRole() == ClassList.ROGUE.role()) {
+                            Weapon w = (Weapon)leftArm;
+                            ui.appendMain(String.format("%4s\n", w.getDamage()));
+                        }
                     }
-                    ui.appendMain(String.format("%20s%4s%4s%4s%5s", "Total:", member.getStrength(), member.getDexterity(), member.getWillpower(), member.getConstitution() + "\n"));
+                    ui.appendMain(String.format("%20s%4s%4s%4s%4s%4s%4s\n", "Total", member.getStrength(), member.getDexterity(), member.getWillpower(), member.getConstitution(), member.getBaseDamage(), member.getArmour()));
                     waitForNullInput();
                     ui.clearMainText();
                     break;

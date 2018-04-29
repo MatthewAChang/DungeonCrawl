@@ -1,5 +1,7 @@
 package World.Character;
 
+import Helper.Enum.ClassList;
+
 public class Mage extends PartyMember {
 
     private static int HP_PER_LEVEL = 4;
@@ -7,14 +9,14 @@ public class Mage extends PartyMember {
 
     public Mage(String name, int baseHp, int baseMana, int str, int dex, int wil, int con)
     {
-        super(name, Class.MAGE.role(), baseHp, baseMana, str, dex, wil, con);
+        super(name, ClassList.MAGE.role(), baseHp, baseMana, str, dex, wil, con);
         setStats();
     }
 
     @Override
     public int getDamage()
     {
-        return super.getDamage() + (getWillpower() / 2);
+        return super.getBaseDamage() + (getWillpower() / 2);
     }
 
     @Override

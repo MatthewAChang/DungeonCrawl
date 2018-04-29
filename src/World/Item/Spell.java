@@ -4,7 +4,7 @@ public class Spell {
     private int id;
     private String name;
 
-    private int effect;
+    private double effect;
     private int cost;
 
     private boolean targetSelf;
@@ -12,7 +12,7 @@ public class Spell {
     private boolean targetEnemy;
     private boolean aoe;
 
-    public Spell(int id, String name, int effect, int cost, boolean targetSelf, boolean targetAlly, boolean targetEnemy, boolean aoe) {
+    public Spell(int id, String name, double effect, int cost, boolean targetSelf, boolean targetAlly, boolean targetEnemy, boolean aoe) {
         this.id = id;
         this.name = name;
 
@@ -33,8 +33,12 @@ public class Spell {
         return name;
     }
 
-    public int getEffect() {
+    public double getEffect() {
         return effect;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     public boolean isTargetSelf() {
@@ -47,10 +51,6 @@ public class Spell {
 
     public boolean isTargetEnemy() {
         return targetEnemy;
-    }
-
-    public boolean isTargetAll() {
-        return targetAlly && targetEnemy;
     }
 
     public boolean isAoe() {

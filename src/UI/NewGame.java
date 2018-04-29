@@ -2,7 +2,7 @@ package UI;
 
 import Helper.Creation;
 import World.Character.PartyMember;
-import World.Character.Class;
+import Helper.Enum.ClassList;
 
 public class NewGame extends Game{
 
@@ -64,7 +64,7 @@ public class NewGame extends Game{
 
     private boolean confirm(String name, int role)
     {
-        ui.clearThenAppendMain("Are you sure your name is " + name + " , and your class is " + Class.toString(role) + ":\n");
+        ui.clearThenAppendMain("Are you sure your name is " + name + " , and your class is " + ClassList.toString(role) + ":\n");
         ui.appendMain("1) Yes   2) No\n");
         while(true)
         {

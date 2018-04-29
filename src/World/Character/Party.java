@@ -28,9 +28,7 @@ public class Party implements Iterable<PartyMember>{
     }
 
     public void addMembers(List<PartyMember> members) {
-        for(PartyMember m: members) {
-            this.partyMembers.add(m);
-        }
+        this.partyMembers.addAll(members);
     }
 
     public void addMember(PartyMember member)

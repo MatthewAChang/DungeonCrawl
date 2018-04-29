@@ -1,6 +1,6 @@
 package UI;
 
-import World.Character.Class;
+import Helper.Enum.ClassList;
 import World.Character.Enemy;
 import World.Character.PartyMember;
 import World.Item.Equipment;
@@ -53,7 +53,7 @@ public class Battle extends Game {
                                         if(attack == -1) {
                                             break cont;
                                         } else {
-                                            option = (option * 100) + attack;
+                                            option = (option * 100000) + attack;
                                             break;
                                         }
                                     case 2:
@@ -61,7 +61,7 @@ public class Battle extends Game {
                                         if(spell == -1) {
                                             break cont;
                                         } else {
-                                            option = (option * 100) + spell;
+                                            option = (option * 100000) + spell;
                                             break;
                                         }
                                     case 3:
@@ -149,7 +149,7 @@ public class Battle extends Game {
             int option = checkValidInput();
             if(option == i)
                 return -1;
-            if (dungeon.getEnemies().get(option - 1).isAlive()) {
+            if (dungeon.getEnemy(option - 1).isAlive()) {
                 return option;
             }
         }
@@ -189,22 +189,28 @@ public class Battle extends Game {
                 if (option == i)
                     return -1;
                 else if (option > 0 && option < i) {
-                    Spell spell = p.getSpells().get(option - 1);
+                    Spell spell = p.getSpell(option - 1);
                     // Single target enemy
                     if (!spell.isTargetSelf() && !spell.isTargetAlly() && spell.isTargetEnemy() && !spell.isAoe()) {
                         int target = targetEnemy();
                         if(target == -1)
                             break;
-                        return (spell.getId() * 10) + target;
+                        return (spell.getId() * 100) + target + 10000;
                     // Single target ally
                     } else if (spell.isTargetSelf() && spell.isTargetAlly() && !spell.isTargetEnemy() && !spell.isAoe()) {
                         int target = targetAlly();
                         if(target == -1)
                             break;
-                        return (spell.getId() * 10) + targetAlly();
-                    // AOE
+                        return (spell.getId() * 100) + target + 20000;
+                    // AOE ally
+                    } else if (spell.isTargetSelf() && spell.isTargetAlly() && !spell.isTargetEnemy() && spell.isAoe()) {
+                        return spell.getId() * 100 + 30000;
+                    // AOE Enemy
+                    } else if (!spell.isTargetSelf() && !spell.isTargetAlly() && spell.isTargetEnemy() && spell.isAoe()) {
+                        return spell.getId() * 100 + 40000;
+                    // Self
                     } else {
-                        return spell.getId() * 10;
+                        return spell.getId() * 100 + 50000 + p.getId();
                     }
                 }
             }
@@ -214,7 +220,7 @@ public class Battle extends Game {
     private boolean run()
     {
         Random rand = new Random();
-        if(rand.nextInt(100) + 1 > 5) {
+        if(rand.nextInt(100) + 1 > 10) {
             ui.clearMainText();
             ui.appendMain("You ran from battle!\n");
             waitForNullInput();
@@ -236,20 +242,24 @@ public class Battle extends Game {
                 PartyMember p = world.getParty().getPartyMember(rand.nextInt(world.getParty().getPartyMembers().size()));
                 if(p.isAlive() && !p.hasAttacked()) {
                     int option = p.getOption();
-                    switch(option / 100) {
+                    switch(option / 100000) {
                         case 1:
-                            Enemy e = dungeon.getEnemies().get((option % 100) - 1);
+                            Enemy e = dungeon.getEnemy((option % 100) - 1);
                             if(e.isAlive()) {
                                 e.damage(damageCalculations(p, e));
                                 updateInformation();
                                 ui.appendMain(p.getName() + " attacked " + e.getName() + " for " + damageCalculations(p, e) + ".\n");
                             } else {
+                                updateInformation();
                                 ui.appendMain(p.getName() + " attacked " + e.getName() + ", but " + e.getName() + " is already dead.\n");
                             }
-                            waitForNullInput();
-                            p.setAttacked(true);
+                            break;
+                        case 2:
+                            useSpell(p, (option / 10000) % 10, (option / 100) % 100, option % 100);
                             break;
                     }
+                    waitForNullInput();
+                    p.setAttacked(true);
                 }
             }
             else
@@ -263,6 +273,7 @@ public class Battle extends Game {
                         updateInformation();
                         ui.appendMain(e.getName() + " attacked " + p.getName() + " for " + damageCalculations(e, p) + ".\n");
                     } else {
+                        updateInformation();
                         ui.appendMain(e.getName() + " attacked " + p.getName() + ", but " + p.getName() + " is already dead.\n");
                     }
                     waitForNullInput();
@@ -276,7 +287,7 @@ public class Battle extends Game {
 
     private int damageCalculations(PartyMember member, Enemy enemy)
     {
-        if(member.getRole() == Class.MAGE.role())
+        if(member.getRole() == ClassList.MAGE.role())
             return member.getDamage();
         double damage = 1 - (enemy.getArmour() / 100.0);
         return (int)(member.getDamage() * damage);
@@ -286,6 +297,52 @@ public class Battle extends Game {
     {
         double damage = 1 - (member.getArmour() / 100.0);
         return (int)(enemy.getDamage() * damage);
+    }
+
+    private void useSpell(PartyMember caster, int type, int spellId, int target) {
+        Spell spell = caster.getSpell(spellId - 1);
+        if(caster.minusMana(spell.getCost())) {
+            int amount = (int) (spell.getEffect() * caster.getDamage());
+
+            switch (type) {
+                case 1:
+                    Enemy enemy = dungeon.getEnemy(target - 1);
+                    enemy.damage(amount);
+                    updateInformation();
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + enemy.getName() + " for " + amount + ".\n");
+                    break;
+                case 2:
+                    PartyMember member = world.getParty().getPartyMember(target - 1);
+                    member.heal(amount);
+                    updateInformation();
+                    if(world.getParty().getPartyMember(target - 1).equals(member))
+                        ui.appendMain(caster.getName() + " used " + spell.getName() + " on themselves to heal " + amount + ".\n");
+                    else
+                        ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + member.getName() + " to heal " + amount + ".\n");
+                    break;
+                case 3:
+                    for (PartyMember p : world.getParty()) {
+                        p.heal(amount);
+                    }
+                    updateInformation();
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on all allies for " + amount + " each.\n");
+                    break;
+                case 4:
+                    for (Enemy e : dungeon) {
+                        e.damage(amount);
+                    }
+                    updateInformation();
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on all enemies for " + amount + " each.\n");
+                    break;
+                case 5:
+                    caster.heal(amount);
+                    updateInformation();
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on themselves to heal " + amount + ".\n");
+                    break;
+            }
+        } else {
+            ui.appendMain(caster.getName() + " does not have enough mana to use " + spell.getName() + ".\n");
+        }
     }
 
     private void newTurn()

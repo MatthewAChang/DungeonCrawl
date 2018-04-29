@@ -1,5 +1,6 @@
 package World.Character;
 
+import Helper.Enum.ClassList;
 import World.Item.Weapon;
 
 public class Rogue extends PartyMember {
@@ -9,13 +10,13 @@ public class Rogue extends PartyMember {
 
     public Rogue(String name, int baseHp, int baseMana, int str, int dex, int wil, int con)
     {
-        super(name, Class.ROGUE.role(), baseHp, baseMana, str, dex, wil, con);
+        super(name, ClassList.ROGUE.role(), baseHp, baseMana, str, dex, wil, con);
         setStats();
     }
 
     public int getDamage()
     {
-        int damage = super.getDamage()  + (getStrength() / 2) + (getDexterity() / 2);
+        int damage = super.getBaseDamage()  + (getStrength() / 2) + (getDexterity() / 2);
         if(getLeftArm() != null) {
             Weapon dagger = (Weapon) getLeftArm();
             damage += dagger.getDamage();

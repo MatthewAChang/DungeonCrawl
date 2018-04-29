@@ -125,8 +125,7 @@ public class Game {
     protected static void waitForNullInput()
     {
         ui.appendMain(">> ");
-        while(!ui.isInputEntered())
-        {
+        while(!ui.isInputEntered()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

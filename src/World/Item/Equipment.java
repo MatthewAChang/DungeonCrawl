@@ -10,7 +10,9 @@ public abstract class Equipment  {
     private int willpower;
     private int constitution;
 
-    public Equipment(String name, int role, int equip, int strength, int dexterity, int willpower, int constitution) {
+    private int value;
+
+    public Equipment(String name, int role, int equip, int strength, int dexterity, int willpower, int constitution, int value) {
         this.name = name;
         this.role = role;
         this.equip = equip;
@@ -18,6 +20,8 @@ public abstract class Equipment  {
         this.dexterity = dexterity;
         this.willpower = willpower;
         this.constitution = constitution;
+
+        this.value = value + ((strength + dexterity + willpower + constitution) * 2);
     }
 
     public String getName()
@@ -53,5 +57,13 @@ public abstract class Equipment  {
     public int getConstitution()
     {
         return constitution;
+    }
+
+    public int getBuyValue() {
+        return value;
+    }
+
+    public int getSellValue() {
+        return value / 5;
     }
 }

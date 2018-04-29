@@ -8,13 +8,13 @@ import java.awt.event.ActionListener;
 public class UIFrame {
     private static UIFrame instance;
 
-    private final int FRAME_WIDTH = 550;
-    private final int FRAME_HEIGHT = 500;
+    private final int FRAME_WIDTH = 650;
+    private final int FRAME_HEIGHT = 600;
 
-    private final int MAIN_TEXT_HEIGHT = 30;
-    private final int MAIN_TEXT_WIDTH = 40;
+    private final int MAIN_TEXT_HEIGHT = 36;
+    private final int MAIN_TEXT_WIDTH = 52;
 
-    private final int INFO_HEIGHT = 15;
+    private final int INFO_HEIGHT = 19;
     private final int INFO_WIDTH = 30;
 
     private JTextArea mainText;
@@ -118,60 +118,51 @@ public class UIFrame {
 
         return panel;
     }
-    public String getTextInput()
+
+    protected String getTextInput()
     {
         inputEntered = false;
         return textInput;
     }
 
-    public void appendMain(String text)
+    protected void appendMain(String text)
     {
         mainText.append(text);
         mainText.setCaretPosition(mainText.getDocument().getLength());
     }
 
-    public void clearThenAppendMain(String text)
+    protected void clearThenAppendMain(String text)
     {
         mainText.setText(text);
         mainText.setCaretPosition(mainText.getDocument().getLength());
     }
 
-    public void appendParty(String text)
+    protected void appendParty(String text)
     {
         partyInfo.append(text);
     }
 
-    public void appendOther(String text)
+    protected void appendOther(String text)
     {
         otherInfo.append(text);
     }
 
-    public boolean isInputEntered()
+    protected boolean isInputEntered()
     {
         return inputEntered;
     }
 
-    public void setInputEntered(boolean inputEntered)
+    protected void setInputEntered(boolean inputEntered)
     {
         this.inputEntered = inputEntered;
     }
 
-    public void clearMainText()
+    protected void clearMainText()
     {
         mainText.setText("");
     }
 
-    public void clearPartyInfo()
-    {
-        partyInfo.setText("");
-    }
-
-    public void clearOtherInfo()
-    {
-        otherInfo.setText("");
-    }
-
-    public void clearAll()
+    protected void clearAll()
     {
         mainText.setText("");
         partyInfo.setText("");
