@@ -246,9 +246,10 @@ public class Battle extends Game {
                         case 1:
                             Enemy e = dungeon.getEnemy((option % 100) - 1);
                             if(e.isAlive()) {
-                                e.damage(damageCalculations(p, e));
+                                int damage = damageCalculations(p.getRole(), p.getDamage(), e.getArmour());
+                                e.damage(damage);
                                 updateInformation();
-                                ui.appendMain(p.getName() + " attacked " + e.getName() + " for " + damageCalculations(p, e) + ".\n");
+                                ui.appendMain(p.getName() + " attacked " + e.getName() + " for " + damage + ".\n");
                             } else {
                                 updateInformation();
                                 ui.appendMain(p.getName() + " attacked " + e.getName() + ", but " + e.getName() + " is already dead.\n");
@@ -269,9 +270,10 @@ public class Battle extends Game {
                 {
                     PartyMember p = world.getParty().getPartyMember(e.getOption() - 1);
                     if(p.isAlive()) {
-                        p.damage(damageCalculations(e, p));
+                        int damage = damageCalculations(-1, e.getDamage(), p.getArmour());
+                        p.damage(damage);
                         updateInformation();
-                        ui.appendMain(e.getName() + " attacked " + p.getName() + " for " + damageCalculations(e, p) + ".\n");
+                        ui.appendMain(e.getName() + " attacked " + p.getName() + " for " + damage + ".\n");
                     } else {
                         updateInformation();
                         ui.appendMain(e.getName() + " attacked " + p.getName() + ", but " + p.getName() + " is already dead.\n");
@@ -285,40 +287,33 @@ public class Battle extends Game {
         ui.clearMainText();
     }
 
-    private int damageCalculations(PartyMember member, Enemy enemy)
+    private int damageCalculations(int role, int damage, int armour)
     {
-        if(member.getRole() == ClassList.MAGE.role())
-            return member.getDamage();
-        double damage = 1 - (enemy.getArmour() / 100.0);
-        return (int)(member.getDamage() * damage);
-    }
-
-    private int damageCalculations(Enemy enemy, PartyMember member)
-    {
-        double damage = 1 - (member.getArmour() / 100.0);
-        return (int)(enemy.getDamage() * damage);
+        if(role == ClassList.MAGE.role())
+            return damage;
+        double reduction = 1 - (armour / 100.0);
+        return (int)(damage * reduction);
     }
 
     private void useSpell(PartyMember caster, int type, int spellId, int target) {
         Spell spell = caster.getSpell(spellId - 1);
         if(caster.minusMana(spell.getCost())) {
             int amount = (int) (spell.getEffect() * caster.getDamage());
+            int damage;
 
             switch (type) {
                 case 1:
                     Enemy enemy = dungeon.getEnemy(target - 1);
-                    enemy.damage(amount);
+                    damage = damageCalculations(caster.getRole(), amount, enemy.getArmour());
+                    enemy.damage(damage);
                     updateInformation();
-                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + enemy.getName() + " for " + amount + ".\n");
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + enemy.getName() + " for " + damage + ".\n");
                     break;
                 case 2:
                     PartyMember member = world.getParty().getPartyMember(target - 1);
                     member.heal(amount);
                     updateInformation();
-                    if(world.getParty().getPartyMember(target - 1).equals(member))
-                        ui.appendMain(caster.getName() + " used " + spell.getName() + " on themselves to heal " + amount + ".\n");
-                    else
-                        ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + member.getName() + " to heal " + amount + ".\n");
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on " + member.getName() + " to heal " + amount + ".\n");
                     break;
                 case 3:
                     for (PartyMember p : world.getParty()) {
@@ -329,10 +324,11 @@ public class Battle extends Game {
                     break;
                 case 4:
                     for (Enemy e : dungeon) {
-                        e.damage(amount);
+                        damage = damageCalculations(caster.getRole(), amount, e.getArmour());
+                        e.damage(damage);
                     }
                     updateInformation();
-                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on all enemies for " + amount + " each.\n");
+                    ui.appendMain(caster.getName() + " used " + spell.getName() + " on all enemies.\n");
                     break;
                 case 5:
                     caster.heal(amount);

@@ -23,7 +23,7 @@ public class Creation {
 
     private final static String[][] NAMES = {
             {"Kingsland", "Bright Garden", "Cave of Glass", "King's Lair"},
-            {"The Green Forest", "The Cave of Trolls", "Forgotten Place", "The"}
+            {"The Green Forest", "The Cave of Trolls", "Forgotten Place", "Home of the Drake"}
 
     };
 
@@ -167,26 +167,23 @@ public class Creation {
                 for(int i = 1; i < rand.nextInt(4) + 2; i++) {
                     enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL.enemy()) + i, enemyId++, 200, 40, 10, false, rand.nextInt(20) + 5, 100, createDrops(EnemyList.TROLL.enemy())));
                 }
-                enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL_LEADER.enemy()), enemyId++, 300, 50, 25, true, rand.nextInt(100) + 100, 40, createDrops(EnemyList.TROLL_LEADER.enemy())));
+                enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL_LEADER.enemy()), enemyId++, 300, 50, 25, true, rand.nextInt(100) + 100, 200, createDrops(EnemyList.TROLL_LEADER.enemy())));
                 break;
             case 4:
-                for(int i = 1; i < rand.nextInt(5) + 2; i++) {
+                for(int i = 1; i < rand.nextInt(5) + 3; i++) {
                     enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL.enemy()) + i, enemyId++, 200, 40, 10, false, rand.nextInt(20) + 5, 100, createDrops(EnemyList.TROLL.enemy())));
                 }
                 break;
             case 5:
-                for(int i = 1; i < rand.nextInt(5) + 2; i++) {
-                    enemies.add(new Enemy(EnemyList.toString(EnemyList.GOBLIN.enemy()) + i, enemyId++, 100, 30, 5, false, rand.nextInt(15) + 1, 50, createDrops(EnemyList.GOBLIN.enemy())));
-                }
-                for(int i = 1; i < rand.nextInt(4) + 2; i++) {
+                for(int i = 1; i < rand.nextInt(4) + 3; i++) {
                     enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL.enemy()) + i, enemyId++, 200, 40, 10, false, rand.nextInt(20) + 5, 100, createDrops(EnemyList.TROLL.enemy())));
+                }
+                for(int i = 1; i < rand.nextInt(3) + 2; i++) {
+                    enemies.add(new Enemy(EnemyList.toString(EnemyList.BABY_DRAKE.enemy()) + i, enemyId++, 200, 60, 15, false, rand.nextInt(20) + 20, 100, createDrops(EnemyList.BABY_DRAKE.enemy())));
                 }
                 break;
             case 6:
-                for(int i = 1; i < rand.nextInt(3) + 2; i++) {
-                    enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL.enemy()) + i, enemyId++, 200, 40, 10, false, rand.nextInt(20) + 5, 100, createDrops(EnemyList.TROLL.enemy())));
-                }
-                enemies.add(new Enemy(EnemyList.toString(EnemyList.TROLL_LEADER.enemy()), enemyId++, 300, 50, 25, true, rand.nextInt(100) + 100, 40, createDrops(EnemyList.TROLL_LEADER.enemy())));
+                enemies.add(new Enemy(EnemyList.toString(EnemyList.DRAKE.enemy()), enemyId++, 500, 100, 30, true, rand.nextInt(200) + 300, 400, createDrops(EnemyList.DRAKE.enemy())));
                 break;
         }
         return new Dungeon(nextDungeonId++, name, enemies);
@@ -210,6 +207,20 @@ public class Creation {
             drops.add(new Armour("Bronze Helmet", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), rand.nextInt(2), 0, 0, rand.nextInt(3) + 1, rand.nextInt(2) + 1));
             drops.add(new Weapon("Glass Sword", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), 5, 3, 2, 1, 40));
         } else if (enemy == EnemyList.TROLL_LEADER.enemy()) {
+            drops.add(new Weapon("Bronze Dagger", ClassList.ROGUE.role(), Restriction.ARM.equip(), rand.nextInt(2), rand.nextInt(3) + 2, 0, 0, rand.nextInt(6) + 30));
+            drops.add(new Weapon("Bronze Sword", ClassList.WARRIOR.role(), Restriction.RIGHT_ARM.equip(), rand.nextInt(3) + 2, 0, 0, 0, rand.nextInt(6) + 50));
+            drops.add(new Weapon("Old Staff", ClassList.MAGE.role(), Restriction.RIGHT_ARM.equip(), 0, 0, rand.nextInt(3) + 2, 0, rand.nextInt(6) + 60));
+            drops.add(new Armour("Ancient Tunic", ClassList.ALL.role(), Restriction.BODY.equip(), 1, 1, 1, 1, rand.nextInt(4) + 5));
+            drops.add(new Armour("Bronze Helmet", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), rand.nextInt(2), 0, 0, rand.nextInt(3) + 1, rand.nextInt(2) + 1));
+            drops.add(new Weapon("Glass Sword", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), 5, 3, 2, 1, 40));
+        } else if (enemy == EnemyList.BABY_DRAKE.enemy()) {
+            drops.add(new Weapon("Bronze Dagger", ClassList.ROGUE.role(), Restriction.ARM.equip(), rand.nextInt(2), rand.nextInt(3) + 2, 0, 0, rand.nextInt(6) + 30));
+            drops.add(new Weapon("Bronze Sword", ClassList.WARRIOR.role(), Restriction.RIGHT_ARM.equip(), rand.nextInt(3) + 2, 0, 0, 0, rand.nextInt(6) + 50));
+            drops.add(new Weapon("Old Staff", ClassList.MAGE.role(), Restriction.RIGHT_ARM.equip(), 0, 0, rand.nextInt(3) + 2, 0, rand.nextInt(6) + 60));
+            drops.add(new Armour("Ancient Tunic", ClassList.ALL.role(), Restriction.BODY.equip(), 1, 1, 1, 1, rand.nextInt(4) + 5));
+            drops.add(new Armour("Bronze Helmet", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), rand.nextInt(2), 0, 0, rand.nextInt(3) + 1, rand.nextInt(2) + 1));
+            drops.add(new Weapon("Glass Sword", ClassList.WARRIOR.role(), Restriction.HEAD.equip(), 5, 3, 2, 1, 40));
+        } else if (enemy == EnemyList.DRAKE.enemy()) {
             drops.add(new Weapon("Bronze Dagger", ClassList.ROGUE.role(), Restriction.ARM.equip(), rand.nextInt(2), rand.nextInt(3) + 2, 0, 0, rand.nextInt(6) + 30));
             drops.add(new Weapon("Bronze Sword", ClassList.WARRIOR.role(), Restriction.RIGHT_ARM.equip(), rand.nextInt(3) + 2, 0, 0, 0, rand.nextInt(6) + 50));
             drops.add(new Weapon("Old Staff", ClassList.MAGE.role(), Restriction.RIGHT_ARM.equip(), 0, 0, rand.nextInt(3) + 2, 0, rand.nextInt(6) + 60));
