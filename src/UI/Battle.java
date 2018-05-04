@@ -41,12 +41,12 @@ public class Battle extends Game {
                     selection:
                     while(true) {
                         ui.clearThenAppendMain(p.getName() + ":\n");
-                        ui.appendMain("1) Attack  2) Spell  3) Item  4) Run\n");
+                        ui.appendMain("1) Attack  2) Spell  3) Run\n");
                         ui.appendMain("5) Help\n");
                         cont:
                         while (true) {
                             int option = checkValidInput();
-                            if (option > 0 && option < 5) {
+                            if (option > 0 && option < 4) {
                                 switch (option) {
                                     case 1:
                                         int attack = targetEnemy();
@@ -65,15 +65,13 @@ public class Battle extends Game {
                                             break;
                                         }
                                     case 3:
-                                        break cont;
-                                    case 4:
                                         if (!run())
                                             break battle;
                                         p.setAttacked(true);
                                 }
                                 p.setOption(option);
                                 break selection;
-                            } else if (option == 5)
+                            } else if (option == 4)
                                 printHelp(4);
                             break;
                         }
@@ -220,7 +218,7 @@ public class Battle extends Game {
     private boolean run()
     {
         Random rand = new Random();
-        if(rand.nextInt(100) + 1 > 10) {
+        if(rand.nextInt(100) + 1 > 15) {
             ui.clearMainText();
             ui.appendMain("You ran from battle!\n");
             waitForNullInput();

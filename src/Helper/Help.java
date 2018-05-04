@@ -36,8 +36,8 @@ public class Help {
     {
         String str;
         str =  "Strength     - Increased damage with attacks\n";
-        str += "Dexterity    - Increased critical chance and chance to dodge\n";
-        str += "Willpower    - Increased damage with staves and spells and increased mana\n";
+        str += "Dexterity    - Increased damage with attacks\n";
+        str += "Willpower    - Increased damage with staves and increased mana\n";
         str += "Constitution - Increased health\n";
         return str;
     }
@@ -46,20 +46,19 @@ public class Help {
     {
         String str;
         str =  "Dungeon   - Go and explore nearby dungeons\n";
-        str += "Shop      - visit the local shop to buy and sell items\n";
-        str += "Inn       - restore health and stamina/mana and save your game\n";
-        str += "Inventory - view your inventory and equip and unequip items\n";
-        str += "Travel    - travel to another town\n";
+        str += "Shop      - Visit the local shop to buy and sell items\n";
+        str += "Inn       - Restore health and stamina/mana and save your game\n";
+        str += "Inventory - View your inventory and equip and unequip items\n";
+        str += "Travel    - Travel to another town\n";
         return str;
     }
 
     private static String helpBattle()
     {
         String str;
-        str =  "Attack - attack an enemy with your main weapon\n";
-        str += "Spell  - use a spell to do damage or heal your allies\n";
-        str += "Item   - use an item to buff yourself or your allies\n";
-        str += "Run    - run back to town (chance to fail)\n";
+        str =  "Attack - Attack an enemy with your main weapon\n";
+        str += "Spell  - Use a spell to do damage or heal your allies\n";
+        str += "Run    - Run back to town (chance to fail)\n";
         return str;
     }
 }
