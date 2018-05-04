@@ -16,10 +16,8 @@ public class MainMenu extends Game {
         townMainMenu();
     }
 
-    private void townMainMenu()
-    {
-        while(true)
-        {
+    private void townMainMenu() {
+        while(true) {
             updateInformation();
             ui.clearMainText();
             ui.appendMain("Main Menu:\n");
@@ -30,8 +28,7 @@ public class MainMenu extends Game {
             ui.appendMain("5) Travel\n");
             ui.appendMain("6) Stats\n");
             ui.appendMain("7) Help\n");
-            while(true)
-            {
+            while(true) {
                 int option = checkValidInput();
                 if(option > 0 && option < 8)
                 {

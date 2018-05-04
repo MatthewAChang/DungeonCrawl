@@ -9,6 +9,7 @@ public class NewGame extends Game{
     public NewGame()
     {
         world.getParty().addMembers(Creation.createNewParty(getInfo()));
+        world.getParty().addGold(10);
         for(PartyMember p : world.getParty())
             levelUp(p);
         printStory(1);
